@@ -46,7 +46,7 @@ void setup()
   bmm350.setOperationMode(BMM350_NORMAL_MODE);
 
   /**!
-   * Set preset mode, make it easier for users to configure sensor to get geomagnetic data
+   * Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
    * presetMode:
    *   BMM350_PRESETMODE_LOWPOWER      // Low power mode, get a fraction of data and take the mean value.
    *   BMM350_PRESETMODE_REGULAR       // Regular mode, get a number of data and take the mean value.
@@ -155,6 +155,7 @@ void loop()
    *   true  Data ready
    *   false Data is not ready yet
    */
+  /*
   if(bmm350.getDataReadyState()){
     sBmm350MagData_t magData = bmm350.getGeomagneticData();
     Serial.print("mag x = "); Serial.print(magData.x); Serial.println(" uT");
@@ -162,12 +163,12 @@ void loop()
     Serial.print("mag z = "); Serial.print(magData.z); Serial.println(" uT");
     Serial.println();
   }
+  */
 
   /**!
     When the interrupt occur in DRDY IO, get the geomagnetic data (get the data ready status through hardware)
     Enable interrupt again
   */ 
-  /* 
   if(interruptFlag == 1){
     Serial.println("Interrupt triggering!");
     sBmm350MagData_t magData = bmm350.getGeomagneticData();
@@ -184,6 +185,6 @@ void loop()
       attachInterrupt(0, myInterrupt, LOW);
     #endif
   }
-  */
+
   delay(1000);
 }

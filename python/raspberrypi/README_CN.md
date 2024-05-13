@@ -102,7 +102,7 @@ python3 data_ready_interrupt.py
   def getRate(self):
 
   '''!
-    @brief 设置预置模式，使用户更简单的配置传感器来获取地磁数据
+    @brief 设置预置模式，使用户更简单的配置传感器来获取地磁数据 (默认的采集速率为12.5Hz)
     @param modes 
     @n     BMM350_PRESETMODE_LOWPOWER       低功率模式,获取少量的数据 取均值
     @n     BMM350_PRESETMODE_REGULAR        普通模式,获取中量数据 取均值

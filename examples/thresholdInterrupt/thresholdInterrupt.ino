@@ -1,4 +1,4 @@
- /*!
+  /*!
   * @file  thresholdInterrupt.ino
   * @brief Set the interrupt to be triggered when beyond/below threshold, when the interrupt at a axis occur, the relevant data will be printed in the serial port.
   * @n Experimental phenomenon: when the geomagnetic data at 3 axis (x, y, z) beyond/below threshold, serial print the geomagnetic data, unit (uT)
@@ -47,7 +47,7 @@ void setup()
   bmm350.setOperationMode(BMM350_NORMAL_MODE);
 
   /**!
-   * Set preset mode, make it easier for users to configure sensor to get geomagnetic data
+   * Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
    * presetMode:
    *   BMM350_PRESETMODE_LOWPOWER      // Low power mode, get a fraction of data and take the mean value.
    *   BMM350_PRESETMODE_REGULAR       // Regular mode, get a number of data and take the mean value.
@@ -156,7 +156,7 @@ void loop()
    *    No interrupt triggered when the data at x-axis, y-axis and z-axis is NO_DATA
    *    Refer to .h file if you want to check interrupt status.
    */
-  
+  /*
   sBmm350ThresholdData_t thresholdData = bmm350.getThresholdData();
   if(thresholdData.mag_x != NO_DATA){
     Serial.print("mag x = "); Serial.print(thresholdData.mag_x); Serial.println(" uT");
@@ -168,26 +168,32 @@ void loop()
     Serial.print("mag z = "); Serial.print(thresholdData.mag_z); Serial.println(" uT");
   }
   Serial.println();
-  
+  */
 
   /**!
     When the interrupt occur in INT IO, get the threshold interrupt data (get the threshold interrupt status through hardware)
   */
-  // if(interruptFlag == 1){
-  //   sBmm350ThresholdData_t thresholdData = bmm350.getThresholdData();
-  //   if(thresholdData.mag_x != NO_DATA){
-  //     Serial.print("mag x = "); Serial.print(thresholdData.mag_x); Serial.println(" uT");
-  //   }
-  //   if(thresholdData.mag_y != NO_DATA){
-  //     Serial.print("mag y = "); Serial.print(thresholdData.mag_y); Serial.println(" uT");
-  //   }
-  //   if(thresholdData.mag_z != NO_DATA){
-  //     Serial.print("mag z = "); Serial.print(thresholdData.mag_z); Serial.println(" uT");
-  //   }
-  //   Serial.println();
-  //   interruptFlag = 0;
-  //   attachInterrupt(13, myInterrupt, ONLOW);
+  if(interruptFlag == 1){
+    sBmm350ThresholdData_t thresholdData = bmm350.getThresholdData();
+    if(thresholdData.mag_x != NO_DATA){
+      Serial.print("mag x = "); Serial.print(thresholdData.mag_x); Serial.println(" uT");
+    }
+    if(thresholdData.mag_y != NO_DATA){
+      Serial.print("mag y = "); Serial.print(thresholdData.mag_y); Serial.println(" uT");
+    }
+    if(thresholdData.mag_z != NO_DATA){
+      Serial.print("mag z = "); Serial.print(thresholdData.mag_z); Serial.println(" uT");
+    }
+    Serial.println();
+    interruptFlag = 0;
+    #if defined(ESP32) || defined(ESP8266)
+      attachInterrupt(13, myInterrupt, ONLOW);
+    #elif defined(ARDUINO_SAM_ZERO)
+      attachInterrupt(13, myInterrupt, LOW);
+    #else
+      attachInterrupt(0, myInterrupt, LOW);
+    #endif
 
-  // }
+  }
   delay(3000);
 }

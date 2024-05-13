@@ -91,7 +91,7 @@ String DFRobot_BMM350::getOperationMode(void)
     return result;
 }
 
-void DFRobot_BMM350::setPresetMode(uint8_t rate, uint8_t presetMode)
+void DFRobot_BMM350::setPresetMode(uint8_t presetMode, enum bmm350_data_rates rate)
 {
     switch (presetMode){
         case BMM350_PRESETMODE_LOWPOWER:

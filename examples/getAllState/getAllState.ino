@@ -39,7 +39,7 @@ void setup()
   bmm350.setOperationMode(BMM350_NORMAL_MODE);
 
   /**!
-   * Set preset mode, make it easier for users to configure sensor to get geomagnetic data, The default rate for obtaining geomagnetic data is 12.5Hz
+   * Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
    * presetMode:
    *   BMM350_PRESETMODE_LOWPOWER      // Low power mode, get a fraction of data and take the mean value.
    *   BMM350_PRESETMODE_REGULAR       // Regular mode, get a number of data and take the mean value.

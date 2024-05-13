@@ -99,7 +99,7 @@ $> python threshold_interrupt.py
   def getRate(self):
 
   '''!
-    @brief Set preset mode, make it easier for users to configure sensor to get geomagnetic data
+    @brief Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
     @param modes 
     @n BMM350_PRESETMODE_LOWPOWER       Low power mode, get a fraction of data and take the mean value.
     @n BMM350_PRESETMODE_REGULAR        Regular mode, get a number of data and take the mean value.

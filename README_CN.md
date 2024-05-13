@@ -68,7 +68,7 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @n BMM350_PRESETMODE_ENHANCED       增强模式,获取大量数据 取均值
    * @n BMM350_PRESETMODE_HIGHACCURACY   高精度模式,获取超大量数据 取均值
    */
-  void setPresetMode(uint8_t rate = BMM350_DATA_RATE_12_5HZ, uint8_t presetMode);
+  void setPresetMode(uint8_t presetMode, uint8_t rate = BMM350_DATA_RATE_12_5HZ);
 
   /**
    * @fn setRate

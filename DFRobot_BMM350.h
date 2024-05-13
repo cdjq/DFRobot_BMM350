@@ -85,7 +85,7 @@ public:
    * @n BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a plenty of data and take the mean value.
    * @n BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and take the mean value.
    */
-  void setPresetMode(uint8_t rate = BMM350_DATA_RATE_12_5HZ, uint8_t presetMode);
+  void setPresetMode(uint8_t presetMode, enum bmm350_data_rates rate = BMM350_DATA_RATE_12_5HZ);
 
   /**
    * @fn setRate
