@@ -4,11 +4,11 @@
 
 BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符合罗盘应用的要求。 基于博世专有的 FlipCore 技术，BMM350 提供了高精度和动态的绝对空间方向和运动矢量。 体积小、重量轻，特别适用于支持无人机精准航向。 BMM350 还可与由 3 轴加速度计和 3 轴陀螺仪组成的惯性测量单元一起使用。
 
-![产品效果图](../../resources/images/SEN0419-f.png)![产品效果图](../../resources/images/SEN0419-b.png)
+![产品效果图](../../resources/images)![产品效果图](../../resources/images)
 
 
-## 产品链接（[https://www.dfrobot.com.cn/goods-3420.html](https://www.dfrobot.com.cn/goods-3420.html)）
-    SKU: SEN0419 
+## 产品链接（[https://www.dfrobot.com.cn](https://www.dfrobot.com.cn)）
+    SKU: 
 
 ## 目录
 
@@ -201,7 +201,6 @@ python3 data_ready_interrupt.py
 
 | Python  | 通过 | 未通过 | 未测试 | 备注 |
 | ------- | :--: | :----: | :----: | ---- |
-| Python2 |  √   |        |        |      |
 | Python3 |  √   |        |        |      |
 
 ## 历史

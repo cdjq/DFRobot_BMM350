@@ -4,10 +4,10 @@
 
 The BMM350 is a low-power and low noise 3-axis digital geomagnetic sensor that perfectly matches the requirements of compass applications. Based on Bosch’s proprietary FlipCore technology, the BMM350 provides absolute spatial orientation and motion vectors with high accuracy and dynamics. Featuring small size and lightweight, it is also especially suited for supporting drones in accurate heading. The BMM350 can also be used together with an inertial measurement unit consisting of a 3-axis accelerometer and a 3-axis gyroscope.
 
-![产品效果图](./resources/images/SEN0419-f.png)![产品效果图](./resources/images/SEN0419-b.png)
+![产品效果图](./resources/images/)![产品效果图](./resources/images/)
 
-## Product Link（[https://www.dfrobot.com.cn/](https://www.dfrobot.com.cn/)）
-    SKU：SEN0419
+## Product Link（[https://www.dfrobot.com](https://www.dfrobot.com)）
+    SKU：
     
 ## Table of Contents
 

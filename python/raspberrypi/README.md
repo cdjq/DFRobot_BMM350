@@ -5,10 +5,10 @@
 This RaspberryPi BMM350 sensor board can communicate with RaspberryPi via I2C or I3C.<br>
 The BMM350 is capable of obtaining triaxial geomagnetic data.<br>
 
-![产品效果图](../../resources/images/SEN0419-f.png)![产品效果图](../../resources/images/SEN0419-b.png)
+![产品效果图](../../resources/images/)![产品效果图](../../resources/images/)
 
-## Product Link（[https://www.dfrobot.com.cn/](https://www.dfrobot.com.cn/)）
-    SKU：SEN0419
+## Product Link（[https://www.dfrobot.com](https://www.dfrobot.com)）
+    SKU：
 
 ## Table of Contents
 
