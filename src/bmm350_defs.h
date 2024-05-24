@@ -105,6 +105,8 @@
 #define BMM350_INTF_RET_TYPE                        int8_t
 #endif
 
+#define UNUSED(x) (void)(x)
+
 /*! Chip id of BMM350 */
 #define BMM350_CHIP_ID                              UINT8_C(0x33)
 

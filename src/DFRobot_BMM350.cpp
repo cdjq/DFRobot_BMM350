@@ -20,6 +20,7 @@ uint8_t bmm350_I2CAddr = 0;
 
 void bmm350_delayUS(uint32_t period, void*intf_ptr)
 {
+    UNUSED(intf_ptr);
     if(period > 1000){
         delay(period/1000);
     }else{
@@ -213,7 +214,8 @@ String DFRobot_BMM350::selfTest(eBMM350_SELFTEST testMode)
     int8_t rslt;
     String result;
     /* Structure instance of self-test data */
-    struct bmm350_self_test st_data = { 0 };
+    struct bmm350_self_test st_data;
+    memset(&st_data, 0, sizeof(st_data));
     switch(testMode){
         case eBMM350_SELF_TEST_NORMAL:
             rslt = bmm350_perform_self_test(&st_data, &bmm350_sensor);
@@ -260,9 +262,10 @@ String DFRobot_BMM350::getMeasurementStateXYZ(void)
 
 sBmm350MagData_t DFRobot_BMM350::getGeomagneticData(void)
 {   
-    int8_t rslt;
-    sBmm350MagData_t magData = {0};
-    struct bmm350_mag_temp_data mag_temp_data = {0};
+    sBmm350MagData_t magData;
+    struct bmm350_mag_temp_data mag_temp_data;
+    memset(&magData, 0, sizeof(magData));
+    memset(&mag_temp_data, 0, sizeof(mag_temp_data));
     bmm350_get_compensated_mag_xyz_temp_data(&mag_temp_data, &bmm350_sensor);
     magData.x = mag_temp_data.x;
     magData.y = mag_temp_data.y;
@@ -311,9 +314,8 @@ void DFRobot_BMM350::setDataReadyPin(enum bmm350_interrupt_enable_disable modes,
 
 bool DFRobot_BMM350::getDataReadyState(void)
 {
-    int8_t rslt;
-    uint8_t drdy_status;
-    rslt = bmm350_get_interrupt_status(&drdy_status, &bmm350_sensor);
+    uint8_t drdy_status = 0x0;
+    bmm350_get_interrupt_status(&drdy_status, &bmm350_sensor);
     if(drdy_status & 0x01){
         return true;
     }else{
@@ -336,7 +338,8 @@ void DFRobot_BMM350::setThresholdInterrupt(uint8_t modes, int8_t threshold, enum
 
 sBmm350ThresholdData_t DFRobot_BMM350::getThresholdData(void)
 {
-    sBmm350MagData_t magData = {0};
+    sBmm350MagData_t magData;
+    memset(&magData, 0, sizeof(magData));
     thresholdData.mag_x = NO_DATA;
     thresholdData.mag_y = NO_DATA;
     thresholdData.mag_z = NO_DATA;

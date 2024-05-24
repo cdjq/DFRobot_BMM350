@@ -29,7 +29,7 @@ void setup()
 {
   Serial.begin(115200);
   while(!Serial);
-  delay(5000);
+  delay(1000);
   while(bmm350.begin()){
     Serial.println("bmm350 init failed, Please try again!");
     delay(1000);
@@ -137,7 +137,7 @@ void setup()
 
   /**!
     Set the pin to interrupt mode
-    // Open the external interrupt 0, connect INT1/2 to the digital pin of the main control:
+    // Open the external interrupt 0, connect INT to the digital pin of the main control:
       function
         callback function
       state
@@ -195,5 +195,5 @@ void loop()
     #endif
 
   }
-  delay(3000);
+  delay(1000);
 }

@@ -33,10 +33,10 @@ This Sensor should work with DFRobot_BMM350 on RaspberryPi. <br>
 Run the program:
 
 ```
-$> python get_all_state.py
-$> python data_ready_interrupt.py
-$> python get_geomagnetic_data.py
-$> python threshold_interrupt.py
+$> python3 get_all_state.py
+$> python3 data_ready_interrupt.py
+$> python3 get_geomagnetic_data.py
+$> python3 threshold_interrupt.py
 ```
 
 ## Methods
@@ -47,18 +47,18 @@ $> python threshold_interrupt.py
     @return 0  is init success
             -1 is init failed
   '''
-  def sensorInit(self):
+  def sensor_init(self):
 
   '''!
     @brief Soft reset, restore to suspended mode after soft reset. (You need to manually enter the normal mode)
   '''
-  def softReset(self):
+  def soft_reset(self):
 
   '''!
     @brief Sensor self test, the returned character string indicate the self test result.
     @return The character string of the test result
   '''
-  def selfTest(self):
+  def self_test(self):
 
   '''!
     @brief Set sensor operation mode
@@ -69,13 +69,13 @@ $> python threshold_interrupt.py
     @n BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
     @n BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
   '''
-  def setOperationMode(self, modes):
+  def set_operation_mode(self, modes):
 
   '''!
     @brief Get sensor operation mode
     @return Return the character string of the operation mode
   '''
-  def getOperationMode(self):
+  def get_operation_mode(self):
 
   '''!
     @brief Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
@@ -90,13 +90,13 @@ $> python threshold_interrupt.py
     @n BMM350_DATA_RATE_200HZ
     @n BMM350_DATA_RATE_400HZ
   '''
-  def setRate(self, rates):
+  def set_rate(self, rates):
 
   '''!
     @brief Get the config data rate, unit: HZ
     @return rate
   '''
-  def getRate(self):
+  def get_rate(self):
 
   '''!
     @brief Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
@@ -107,7 +107,7 @@ $> python threshold_interrupt.py
     @n BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and take the mean value.
 
   '''
-  def setPresetMode(self, modes):
+  def set_preset_mode(self, modes):
 
   '''!
     @brief Enable the measurement at x-axis, y-axis and z-axis, default to be enabled. After disabling, the geomagnetic data at x, y, and z axis are wrong.
@@ -121,13 +121,13 @@ $> python threshold_interrupt.py
     @n   BMM350_Z_EN        Enable the measurement at z-axis
     @n   BMM350_Z_DIS       Disable the measurement at z-axis
   '''
-  def setMeasurementXYZ(self, en_x = BMM350_X_EN, en_y = BMM350_Y_EN, en_z = BMM350_Z_EN):
+  def set_measurement_XYZ(self, en_x = BMM350_X_EN, en_y = BMM350_Y_EN, en_z = BMM350_Z_EN):
 
   '''!
     @brief Get the enabling status at x-axis, y-axis and z-axis
     @return Return enabling status at x-axis, y-axis and z-axis as a character string
   '''
-  def getMeasurementStateXYZ(self):
+  def get_measurement_state_XYZ(self):
 
   '''!
     @brief Get the geomagnetic data of 3 axis (x, y, z)
@@ -136,13 +136,13 @@ $> python threshold_interrupt.py
     @       [1] The geomagnetic data at y-axis
     @       [2] The geomagnetic data at z-axis
   '''
-  def getGeomagneticData(self):
+  def get_geomagnetic_data(self):
 
   '''!
     @brief Get compass degree
     @return Compass degree (0° - 360°)  0° = North, 90° = East, 180° = South, 270° = West.
   '''
-  def getCompassDegree(self):
+  def get_compass_degree(self):
 
   '''!
     @brief Enable or disable data ready interrupt pin
@@ -157,7 +157,7 @@ $> python threshold_interrupt.py
     @n     BMM350_ACTIVE_HIGH              High polarity
     @n     BMM350_ACTIVE_LOW               Low polarity
   '''
-  def setDataReadyPin(self, modes, polarity):
+  def set_data_ready_pin(self, modes, polarity):
 
   '''!
     @brief Get data ready status, determine whether the data is ready
@@ -165,7 +165,7 @@ $> python threshold_interrupt.py
     @n True  Data ready
     @n False Data is not ready
   '''
-  def getDataReadyState(self):
+  def get_data_ready_state(self):
 
   '''!
     @brief Set threshold interrupt, an interrupt is triggered when the geomagnetic value of a channel is beyond/below the threshold
@@ -180,7 +180,7 @@ $> python threshold_interrupt.py
     @n     POLARITY_HIGH      High polarity
     @n     POLARITY_LOW       Low polarity
   '''
-  def setThresholdInterrupt(self, modes, threshold, polarity):
+  def set_threshold_interrupt(self, modes, threshold, polarity):
 
   '''!
     @brief Get the data that threshold interrupt occured
@@ -189,7 +189,7 @@ $> python threshold_interrupt.py
     @n      [1] The data triggering threshold at y-axis, when the data is NO_DATA, the interrupt is triggered.
     @n      [2] The data triggering threshold at z-axis, when the data is NO_DATA, the interrupt is triggered.
   '''
-  def getThresholdData(self):
+  def get_threshold_data(self):
 ```
 
 ## History

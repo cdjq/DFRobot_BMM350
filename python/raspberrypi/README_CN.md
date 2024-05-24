@@ -36,11 +36,7 @@ sudo git clone https://github.com/DFRobot/DFRobot_BMM350
 2. 打开并运行例程，要执行一个例程demo_x.py，请在命令行中输入python demo_x.py。例如，要执行data_ready_interrupt.py例程，你需要输入:<br>
 
 ```python
-python data_ready_interrupt.py 
-或 
-python2 data_ready_interrupt.py 
-或 
-python3 data_ready_interrupt.py
+python3 data_ready_interrupt.py 
 ```
 
 ## 方法
@@ -51,18 +47,18 @@ python3 data_ready_interrupt.py
     @return 0  is init success
     @n      -1 is init failed
   '''
-  def sensorInit(self):
+  def sensor_init(self):
 
   '''!
     @brief 软件复位，软件复位后先恢复为挂起模式（需手动进行普通模式）
   '''
-  def softReset(self):
+  def soft_reset(self):
 
   '''!
     @brief 传感器自测，返回字符串表明自检结果
     @return 测试结果的字符串
   '''
-  def selfTest(self):
+  def self_test(self):
 
   '''!
     @brief 设置传感器的执行模式
@@ -72,13 +68,13 @@ python3 data_ready_interrupt.py
     @n     BMM350_FORCED_MODE       强制模式: 单次测量，测量完成后传感器恢复到暂停模式
     @n     BMM350_FORCED_MODE_FAST  只有使用FM_ FAST才能达到ODR = 200Hz
   '''
-  def setOperationMode(self, modes):
+  def set_operation_mode(self, modes):
 
   '''!
     @brief 获取传感器的执行模式
     @return 返回模式的字符串
   '''
-  def getOperationMode(self):
+  def get_operation_mode(self):
 
   '''!
     @brief 设置地磁数据获取的速率，速率越大获取越快(不加延时函数)
@@ -93,13 +89,13 @@ python3 data_ready_interrupt.py
     @n BMM350_DATA_RATE_200HZ
     @n BMM350_DATA_RATE_400HZ
   '''
-  def setRate(self, rates):
+  def set_rate(self, rates):
 
   '''!
     @brief 获取配置的数据速率 单位：HZ
     @return rate
   '''
-  def getRate(self):
+  def get_rate(self):
 
   '''!
     @brief 设置预置模式，使用户更简单的配置传感器来获取地磁数据 (默认的采集速率为12.5Hz)
@@ -109,7 +105,7 @@ python3 data_ready_interrupt.py
     @n     BMM350_PRESETMODE_ENHANCED       增强模式,获取大量数据 取均值
     @n     BMM350_PRESETMODE_HIGHACCURACY   高精度模式,获取超大量数据 取均值
   '''
-  def setPresetMode(self, modes):
+  def set_preset_mode(self, modes):
 
   '''!
     @brief 使能x y z 轴的测量，默认设置为使能不需要配置，禁止后xyz轴的地磁数据不准确
@@ -123,13 +119,13 @@ python3 data_ready_interrupt.py
     @n     BMM350_Z_EN     使能 z 轴的测量
     @n     BMM350_Z_DIS    禁止 z 轴的测量
   '''
-  def setMeasurementXYZ(self, en_x = BMM350_X_EN, en_y = BMM350_Y_EN, en_z = BMM350_Z_EN):
+  def set_measurement_XYZ(self, en_x = BMM350_X_EN, en_y = BMM350_Y_EN, en_z = BMM350_Z_EN):
 
   '''!
     @brief 获取 x y z 轴的使能状态
     @return 返回xyz 轴的使能状态的字符串
   '''
-  def getMeasurementStateXYZ(self):
+  def get_measurement_state_XYZ(self):
 
   '''!
     @brief 获取x y z 三轴的地磁数据
@@ -138,13 +134,13 @@ python3 data_ready_interrupt.py
     @n      [1] y 轴地磁的数据
     @n      [2] z 轴地磁的数据
   '''
-  def getGeomagneticData(self):
+  def get_geomagnetic_data(self):
 
   '''!
     @brief 获取罗盘方向
     @return 罗盘方向 (0° - 360°)  0° = North, 90° = East, 180° = South, 270° = West.
   '''
-  def getCompassDegree(self):
+  def get_compass_degree(self):
 
   '''!
     @brief 使能或者禁止数据准备中断引脚
@@ -159,7 +155,7 @@ python3 data_ready_interrupt.py
     @n     BMM350_ACTIVE_HIGH    高极性
     @n     BMM350_ACTIVE_LOW     低极性
   '''
-  def setDataReadyPin(self, modes, polarity):
+  def set_data_ready_pin(self, modes, polarity):
 
   '''!
     @brief 获取数据准备的状态，用来判断数据是否准备好
@@ -167,7 +163,7 @@ python3 data_ready_interrupt.py
     @n True 表示数据已准备好
     @n False 表示数据还未准备好
   '''
-  def getDataReadyState(self):
+  def get_data_ready_state(self):
 
   '''!
     @brief 设置阈值中断，当某个通道的地磁值高/低于阈值时触发中断
@@ -181,7 +177,7 @@ python3 data_ready_interrupt.py
     @n     POLARITY_HIGH               高极性
     @n     POLARITY_LOW                低极性
   '''
-  def setThresholdInterrupt(self, modes, threshold, polarity):
+  def set_threshold_interrupt(self, modes, threshold, polarity):
 
   '''!
     @brief 获取发生阈值中断的数据
@@ -190,7 +186,7 @@ python3 data_ready_interrupt.py
     @n      [1] y 轴触发阈值的数据 ，当数据为NO_DATA时为触发中断
     @n      [2] z 轴触发阈值的数据 ，当数据为NO_DATA时为触发中断
   '''
-  def getThresholdData(self):
+  def get_threshold_data(self):
 ```
 
 ## 兼容性

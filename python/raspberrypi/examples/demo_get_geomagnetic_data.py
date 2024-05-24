@@ -25,7 +25,7 @@ I2C_BUS         = 0x01   #default use I2C1
 bmm350 = DFRobot_bmm350_I2C(I2C_BUS, 0x14)
 
 def setup():
-  while BMM350_CHIP_ID_ERROR == bmm350.sensorInit():
+  while BMM350_CHIP_ID_ERROR == bmm350.sensor_init():
     print("sensor init error, please check connect") 
     time.sleep(1)
 
@@ -38,7 +38,7 @@ def setup():
         BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
         BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
   '''
-  bmm350.setOperationMode(BMM350_NORMAL_MODE)
+  bmm350.set_operation_mode(BMM350_NORMAL_MODE)
 
   '''
     Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
@@ -48,7 +48,7 @@ def setup():
         BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a large number of data and draw the mean value.
         BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and draw the mean value.
   '''
-  bmm350.setPresetMode(BMM350_PRESETMODE_HIGHACCURACY)
+  bmm350.set_preset_mode(BMM350_PRESETMODE_HIGHACCURACY)
 
   '''
     Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
@@ -63,28 +63,28 @@ def setup():
         BMM350_DATA_RATE_200HZ
         BMM350_DATA_RATE_400HZ
   '''
-  bmm350.setRate(BMM350_DATA_RATE_25HZ)
+  bmm350.set_rate(BMM350_DATA_RATE_25HZ)
   
   
   '''
     Enable the measurement at x-axis, y-axis and z-axis, default to be enabled, no config required. When disabled, the geomagnetic data at x, y, and z will be inaccurate.
     Refer to readme file if you want to configure more parameters.
   '''
-  bmm350.setMeasurementXYZ()
+  bmm350.set_measurement_XYZ()
   
 def loop():
-  geomagnetic = bmm350.getGeomagneticData()
+  geomagnetic = bmm350.get_geomagnetic_data()
   print("mag x = %d ut"%geomagnetic[0])
   print("mag y = %d ut"%geomagnetic[1])
   print("mag z = %d ut"%geomagnetic[2])
   
   # get float type data
-  # geomagnetic = bmm350.getGeomagneticData()
+  # geomagnetic = bmm350.get_geomagnetic_data()
   # print("---------------------------------")
   # print("mag x = %.2f ut"%geomagnetic[0])
   # print("mag y = %.2f ut"%geomagnetic[1])
   # print("mag z = %.2f ut"%geomagnetic[2])
-  degree = bmm350.getCompassDegree()
+  degree = bmm350.get_compass_degree()
   print("---------------------------------")
   print("the angle between the pointing direction and north (counterclockwise) is: %.2f "%degree) 
   time.sleep(1)

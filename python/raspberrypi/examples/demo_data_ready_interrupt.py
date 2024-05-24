@@ -26,7 +26,7 @@ I2C_BUS         = 0x01   #default use I2C1
 bmm350 = DFRobot_bmm350_I2C(I2C_BUS, 0x14)
 
 def setup():
-  while BMM350_CHIP_ID_ERROR == bmm350.sensorInit():
+  while BMM350_CHIP_ID_ERROR == bmm350.sensor_init():
     print("sensor init error, please check connect") 
     time.sleep(1)
 
@@ -39,12 +39,12 @@ def setup():
         BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
         BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
   '''
-  bmm350.setOperationMode(BMM350_NORMAL_MODE)
+  bmm350.set_operation_mode(BMM350_NORMAL_MODE)
 
   '''
     Get the operation mode character string of the sensor
   '''
-  print('Current power mode: ', bmm350.getOperationMode()) 
+  print('Current power mode: ', bmm350.get_operation_mode()) 
 
   '''
     Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
@@ -54,7 +54,7 @@ def setup():
         BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a large number of data and draw the mean value.
         BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and draw the mean value.
   '''
-  bmm350.setPresetMode(BMM350_PRESETMODE_HIGHACCURACY)
+  bmm350.set_preset_mode(BMM350_PRESETMODE_HIGHACCURACY)
 
   '''
     Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
@@ -69,13 +69,13 @@ def setup():
         BMM350_DATA_RATE_200HZ
         BMM350_DATA_RATE_400HZ
   '''
-  bmm350.setRate(BMM350_DATA_RATE_25HZ)
+  bmm350.set_rate(BMM350_DATA_RATE_25HZ)
   
   '''
     Enable the measurement at x-axis, y-axis and z-axis, default to be enabled, no config required. When disabled, the geomagnetic data at x, y, and z will be inaccurate.
     Refer to readme file if you want to configure more parameters.
   '''
-  bmm350.setMeasurementXYZ()
+  bmm350.set_measurement_XYZ()
 
   '''
     Enable or disable data ready interrupt pin
@@ -90,7 +90,7 @@ def setup():
         BMM350_ACTIVE_HIGH  High polarity
         BMM350_ACTIVE_LOW   Low polarity
   '''
-  bmm350.setDataReadyPin(BMM350_ENABLE_INTERRUPT, BMM350_ACTIVE_LOW)
+  bmm350.set_data_ready_pin(BMM350_ENABLE_INTERRUPT, BMM350_ACTIVE_LOW)
   
 
 def loop():
@@ -100,8 +100,8 @@ def loop():
         True    Data ready
         False   Data is not ready yet
   '''
-  if bmm350.getDataReadyState() == 1:
-    rslt = bmm350.getGeomagneticData()
+  if bmm350.get_data_ready_state() == 1:
+    rslt = bmm350.get_geomagnetic_data()
     print("mag x = %d ut"%rslt[0]) 
     print("mag y = %d ut"%rslt[1]) 
     print("mag z = %d ut"%rslt[2]) 

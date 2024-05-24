@@ -971,7 +971,6 @@ class DFRobot_bmm350(object):
     bmm350_sensor.mag_comp.cross_axis.cross_z_y = self.fix_sign(cross_z_y, BMM350_SIGNED_8_BIT) / 800.0
 
 
-  '''Set the power mode of the sensor'''
   def bmm350_set_powermode(self, powermode):
     last_pwr_mode = self.read_reg(BMM350_REG_PMU_CMD, 1)
     if (last_pwr_mode[0] == BMM350_PMU_CMD_NM) or (last_pwr_mode[0] == BMM350_PMU_CMD_UPD_OAE):
@@ -1004,7 +1003,6 @@ class DFRobot_bmm350(object):
     bmm350_sensor.power_mode = powermode
 
 
-  '''magnetic reset'''
   def bmm350_magnetic_reset_and_wait(self):
     # 1. Read PMU CMD status
     reg_data = self.read_reg(BMM350_REG_PMU_CMD_STATUS_0, 1)
@@ -1030,12 +1028,12 @@ class DFRobot_bmm350(object):
       self.bmm350_set_powermode(BMM350_NORMAL_MODE)
 
 
-  '''!
-    @brief Init bmm350 check whether the chip id is right
-    @return 0  is init success
-            -1 is init failed
-  '''
-  def sensorInit(self):
+  def sensor_init(self):
+    '''!
+      @brief Init bmm350 check whether the chip id is right
+      @return 0  is init success
+              -1 is init failed
+    '''
     rslt = BMM350_OK
     # Specifies that all axes are enabled
     bmm350_sensor.axis_en = BMM350_EN_XYZ_MSK
@@ -1080,39 +1078,40 @@ class DFRobot_bmm350(object):
     return rslt
 
 
-  '''Get chip id'''
   def get_chip_id(self):
     chip_id = self.read_reg(BMM350_REG_CHIP_ID, 1)
     return chip_id[0]
 
 
-  '''!
-    @brief Soft reset, restore to suspended mode after soft reset. (You need to manually enter the normal mode)
-  '''
-  def softReset(self):
+  def soft_reset(self):
+    '''!
+      @brief Soft reset, restore to suspended mode after soft reset. (You need to manually enter the normal mode)
+    '''
     self.write_reg(BMM350_REG_CMD, BMM350_CMD_SOFTRESET) # Software reset
     time.sleep(BMM350_SOFT_RESET_DELAY)
     self.write_reg(BMM350_REG_OTP_CMD_REG, BMM350_OTP_CMD_PWR_OFF_OTP) # Disable OTP
     self.bmm350_magnetic_reset_and_wait() # magnetic reset
     self.bmm350_set_powermode(BMM350_SUSPEND_MODE)
 
-  '''!
-    @brief Set sensor operation mode
-    @param modes
-    @n BMM350_SUSPEND_MODE      suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
-                                so, this mode is useful for periods when data conversion is not needed. Read and write of all registers is possible.
-    @n BMM350_NORMAL_MODE       normal mode: Get geomagnetic data normally.      
-    @n BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
-    @n BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
-  '''
-  def setOperationMode(self, modes):
+
+  def set_operation_mode(self, modes):
+    '''!
+      @brief Set sensor operation mode
+      @param modes
+      @n BMM350_SUSPEND_MODE      suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
+                                  so, this mode is useful for periods when data conversion is not needed. Read and write of all registers is possible.
+      @n BMM350_NORMAL_MODE       normal mode: Get geomagnetic data normally.      
+      @n BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
+      @n BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
+    '''
     self.bmm350_set_powermode(modes)
 
-  '''!
-    @brief Get sensor operation mode
-    @return Return the character string of the operation mode
-  '''
-  def getOperationMode(self):
+
+  def get_operation_mode(self):
+    '''!
+      @brief Get sensor operation mode
+      @return Return the character string of the operation mode
+    '''
     result = ""
     if bmm350_sensor.power_mode == BMM350_SUSPEND_MODE:
        result = "bmm350 is suspend mode!"
@@ -1126,20 +1125,21 @@ class DFRobot_bmm350(object):
        result = "error mode!"
     return result
 
-  '''!
-    @brief Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
-    @param rate
-    @n BMM350_DATA_RATE_1_5625HZ
-    @n BMM350_DATA_RATE_3_125HZ
-    @n BMM350_DATA_RATE_6_25HZ
-    @n BMM350_DATA_RATE_12_5HZ  (default rate)
-    @n BMM350_DATA_RATE_25HZ
-    @n BMM350_DATA_RATE_50HZ
-    @n BMM350_DATA_RATE_100HZ
-    @n BMM350_DATA_RATE_200HZ
-    @n BMM350_DATA_RATE_400HZ
-  '''
-  def setRate(self, rates):
+
+  def set_rate(self, rates):
+    '''!
+      @brief Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
+      @param rate
+      @n BMM350_DATA_RATE_1_5625HZ
+      @n BMM350_DATA_RATE_3_125HZ
+      @n BMM350_DATA_RATE_6_25HZ
+      @n BMM350_DATA_RATE_12_5HZ  (default rate)
+      @n BMM350_DATA_RATE_25HZ
+      @n BMM350_DATA_RATE_50HZ
+      @n BMM350_DATA_RATE_100HZ
+      @n BMM350_DATA_RATE_200HZ
+      @n BMM350_DATA_RATE_400HZ
+    '''
     self.bmm350_set_powermode(BMM350_NORMAL_MODE)
     avg_odr_reg = self.read_reg(BMM350_REG_PMU_CMD_AGGR_SET, 1)
     avg_reg = self.BMM350_GET_BITS(avg_odr_reg[0], BMM350_AVG_MSK, BMM350_AVG_POS)
@@ -1149,11 +1149,12 @@ class DFRobot_bmm350(object):
     self.write_reg(BMM350_REG_PMU_CMD, BMM350_PMU_CMD_UPD_OAE)
     time.sleep(BMM350_UPD_OAE_DELAY)
 
-  '''!
-    @brief Get the config data rate, unit: HZ
-    @return rate
-  '''
-  def getRate(self):
+
+  def get_rate(self):
+    '''!
+      @brief Get the config data rate, unit: HZ
+      @return rate
+    '''
     avg_odr_reg = self.read_reg(BMM350_REG_PMU_CMD_AGGR_SET, 1)
     odr_reg = self.BMM350_GET_BITS(avg_odr_reg[0], BMM350_ODR_MSK, BMM350_ODR_POS)
     if odr_reg == BMM350_ODR_1_5625HZ:
@@ -1176,27 +1177,28 @@ class DFRobot_bmm350(object):
       result = 400
     return result
 
-  '''!
-    @brief Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
-    @param modes 
-    @n BMM350_PRESETMODE_LOWPOWER       Low power mode, get a fraction of data and take the mean value.
-    @n BMM350_PRESETMODE_REGULAR        Regular mode, get a number of data and take the mean value.
-    @n BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a plenty of data and take the mean value.
-    @n BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and take the mean value.
 
-  '''
-  def setPresetMode(self, avg, odr = BMM350_DATA_RATE_12_5HZ):
+  def set_preset_mode(self, avg, odr = BMM350_DATA_RATE_12_5HZ):
+    '''!
+      @brief Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
+      @param modes 
+      @n BMM350_PRESETMODE_LOWPOWER       Low power mode, get a fraction of data and take the mean value.
+      @n BMM350_PRESETMODE_REGULAR        Regular mode, get a number of data and take the mean value.
+      @n BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a plenty of data and take the mean value.
+      @n BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and take the mean value.
+
+    '''
     reg_data = (odr & BMM350_ODR_MSK)
     reg_data = self.BMM350_SET_BITS(reg_data, BMM350_AVG_MSK, BMM350_AVG_POS, avg)
     self.write_reg(BMM350_REG_PMU_CMD_AGGR_SET, reg_data)
     self.write_reg(BMM350_REG_PMU_CMD, BMM350_PMU_CMD_UPD_OAE)  
 
 
-  '''!
-    @brief Sensor self test, the returned character string indicate the self test result.
-    @return The character string of the test result
-  '''
-  def selfTest(self):
+  def self_test(self):
+    '''!
+      @brief Sensor self test, the returned character string indicate the self test result.
+      @return The character string of the test result
+    '''
     axis_en = self.read_reg(BMM350_REG_PMU_CMD_AXIS_EN, 1)
     en_x = self.BMM350_GET_BITS(axis_en[0], BMM350_EN_X_MSK, BMM350_EN_X_POS)
     en_y = self.BMM350_GET_BITS(axis_en[0], BMM350_EN_Y_MSK, BMM350_EN_Y_POS)
@@ -1214,19 +1216,20 @@ class DFRobot_bmm350(object):
       str1 += "aix test success"
     return str1
 
-  '''!
-    @brief Enable the measurement at x-axis, y-axis and z-axis, default to be enabled. After disabling, the geomagnetic data at x, y, and z axis are wrong.
-    @param en_x
-    @n   BMM350_X_EN        Enable the measurement at x-axis
-    @n   BMM350_X_DIS       Disable the measurement at x-axis
-    @param en_y
-    @n   BMM350_Y_EN        Enable the measurement at y-axis
-    @n   BMM350_Y_DIS       Disable the measurement at y-axis
-    @param en_z
-    @n   BMM350_Z_EN        Enable the measurement at z-axis
-    @n   BMM350_Z_DIS       Disable the measurement at z-axis
-  '''
-  def setMeasurementXYZ(self, en_x = BMM350_X_EN, en_y = BMM350_Y_EN, en_z = BMM350_Z_EN):
+
+  def set_measurement_XYZ(self, en_x = BMM350_X_EN, en_y = BMM350_Y_EN, en_z = BMM350_Z_EN):
+    '''!
+      @brief Enable the measurement at x-axis, y-axis and z-axis, default to be enabled. After disabling, the geomagnetic data at x, y, and z axis are wrong.
+      @param en_x
+      @n   BMM350_X_EN        Enable the measurement at x-axis
+      @n   BMM350_X_DIS       Disable the measurement at x-axis
+      @param en_y
+      @n   BMM350_Y_EN        Enable the measurement at y-axis
+      @n   BMM350_Y_DIS       Disable the measurement at y-axis
+      @param en_z
+      @n   BMM350_Z_EN        Enable the measurement at z-axis
+      @n   BMM350_Z_DIS       Disable the measurement at z-axis
+    '''
     if en_x == BMM350_X_DIS and en_y == BMM350_Y_DIS and en_z == BMM350_Z_DIS:
       bmm350_sensor.axis_en = BMM350_DISABLE
     else:
@@ -1236,11 +1239,12 @@ class DFRobot_bmm350(object):
       data = self.BMM350_SET_BITS(data, BMM350_EN_Z_MSK, BMM350_EN_Z_POS, en_z)
       bmm350_sensor.axis_en = data
 
-  '''!
-    @brief Get the enabling status at x-axis, y-axis and z-axis
-    @return Return enabling status at x-axis, y-axis and z-axis as a character string
-  '''
-  def getMeasurementStateXYZ(self):
+
+  def get_measurement_state_XYZ(self):
+    '''!
+      @brief Get the enabling status at x-axis, y-axis and z-axis
+      @return Return enabling status at x-axis, y-axis and z-axis as a character string
+    '''
     axis_en = bmm350_sensor.axis_en
     en_x = self.BMM350_GET_BITS(axis_en, BMM350_EN_X_MSK, BMM350_EN_X_POS)
     en_y = self.BMM350_GET_BITS(axis_en, BMM350_EN_Y_MSK, BMM350_EN_Y_POS)
@@ -1251,14 +1255,15 @@ class DFRobot_bmm350(object):
     result += "The z axis is enable! " if en_z == 1 else "The z axis is disable! "
     return result
 
-  '''!
-    @brief Get the geomagnetic data of 3 axis (x, y, z)
-    @return The list of the geomagnetic data at 3 axis (x, y, z) unit: uT
-    @       [0] The geomagnetic data at x-axis
-    @       [1] The geomagnetic data at y-axis
-    @       [2] The geomagnetic data at z-axis
-  '''
-  def getGeomagneticData(self):
+
+  def get_geomagnetic_data(self):
+    '''!
+      @brief Get the geomagnetic data of 3 axis (x, y, z)
+      @return The list of the geomagnetic data at 3 axis (x, y, z) unit: uT
+      @       [0] The geomagnetic data at x-axis
+      @       [1] The geomagnetic data at y-axis
+      @       [2] The geomagnetic data at z-axis
+    '''
     # 1. Get raw data without compensation
     mag_data = self.read_reg(BMM350_REG_MAG_X_XLSB, BMM350_MAG_TEMP_DATA_LEN)
     raw_mag_x = mag_data[0] + (mag_data[1] << 8) + (mag_data[2] << 16)
@@ -1372,12 +1377,13 @@ class DFRobot_bmm350(object):
     geomagnetic[2] = _mag_data.z
     return geomagnetic
 
-  '''!
-    @brief Get compass degree
-    @return Compass degree (0° - 360°)  0° = North, 90° = East, 180° = South, 270° = West.
-  '''
-  def getCompassDegree(self):
-    magData = self.getGeomagneticData()
+
+  def get_compass_degree(self):
+    '''!
+      @brief Get compass degree
+      @return Compass degree (0° - 360°)  0° = North, 90° = East, 180° = South, 270° = West.
+    '''
+    magData = self.get_geomagnetic_data()
     compass = math.atan2(magData[0], magData[1])
     if compass < 0:
       compass += 2 * PI
@@ -1385,20 +1391,21 @@ class DFRobot_bmm350(object):
       compass -= 2 * PI
     return compass * 180 / M_PI
 
-  '''!
-    @brief Enable or disable data ready interrupt pin
-    @n After enabling, the DRDY pin jump when there's data coming.
-    @n After disabling, the DRDY pin will not jump when there's data coming.
-    @n High polarity: active on high, the default is low level, which turns to high level when the interrupt is triggered.
-    @n Low polarity: active on low, default is high level, which turns to low level when the interrupt is triggered.
-    @param modes
-    @n     BMM350_ENABLE_INTERRUPT        Enable DRDY
-    @n     BMM350_DISABLE_INTERRUPT       Disable DRDY
-    @param polarity
-    @n     BMM350_ACTIVE_HIGH              High polarity
-    @n     BMM350_ACTIVE_LOW               Low polarity
-  '''
-  def setDataReadyPin(self, modes, polarity):
+
+  def set_data_ready_pin(self, modes, polarity):
+    '''!
+      @brief Enable or disable data ready interrupt pin
+      @n After enabling, the DRDY pin jump when there's data coming.
+      @n After disabling, the DRDY pin will not jump when there's data coming.
+      @n High polarity  active on high, the default is low level, which turns to high level when the interrupt is triggered.
+      @n Low polarity   active on low, default is high level, which turns to low level when the interrupt is triggered.
+      @param modes
+      @n     BMM350_ENABLE_INTERRUPT        Enable DRDY
+      @n     BMM350_DISABLE_INTERRUPT       Disable DRDY
+      @param polarity
+      @n     BMM350_ACTIVE_HIGH              High polarity
+      @n     BMM350_ACTIVE_LOW               Low polarity
+    '''
     # 1. Gets and sets the interrupt control configuration
     reg_data = self.read_reg(BMM350_REG_INT_CTRL, 1)
     reg_data[0] = self.BMM350_SET_BITS_POS_0(reg_data[0], BMM350_INT_MODE_MSK, BMM350_INT_MODE_PULSED)
@@ -1409,14 +1416,15 @@ class DFRobot_bmm350(object):
     # 2. Update interrupt control configuration
     self.write_reg(BMM350_REG_INT_CTRL, reg_data[0]) 
 
-  '''!
-    @brief Get data ready status, determine whether the data is ready
-    @return status
-    @n True  Data ready
-    @n False Data is not ready
-  '''
-  def getDataReadyState(self):
-    int_status_reg = self.read_reg(BMM350_REG_INT_STATUS, 1)
+
+  def get_data_ready_state(self):
+    '''!
+      @brief Get data ready status, determine whether the data is ready
+      @return status
+      @n True  Data ready
+      @n False Data is not ready
+    '''
+    int_status_reg = self.read_reg(BMM350_REG_INT_STATUS, 1) 
     drdy_status = self.BMM350_GET_BITS(int_status_reg[0], BMM350_DRDY_DATA_REG_MSK, BMM350_DRDY_DATA_REG_POS)
     if drdy_status & 0x01:
       return True
@@ -1424,41 +1432,42 @@ class DFRobot_bmm350(object):
       return False
 
 
-  '''!
-    @brief Set threshold interrupt, an interrupt is triggered when the geomagnetic value of a channel is beyond/below the threshold
-    @n      High polarity: active on high level, the default is low level, which turns to high level when the interrupt is triggered.
-    @n      Low polarity: active on low level, the default is high level, which turns to low level when the interrupt is triggered.
-    @param modes
-    @n     LOW_THRESHOLD_INTERRUPT       Low threshold interrupt mode
-    @n     HIGH_THRESHOLD_INTERRUPT      High threshold interrupt mode
-    @param  threshold
-    @n     Threshold, default to expand 16 times, for example: under low threshold mode, if the threshold is set to be 1, actually the geomagnetic data below 16 will trigger an interrupt
-    @param polarity
-    @n     POLARITY_HIGH      High polarity
-    @n     POLARITY_LOW       Low polarity
-  '''
-  def setThresholdInterrupt(self, modes, threshold, polarity):
+  def set_threshold_interrupt(self, modes, threshold, polarity):
+    '''!
+      @brief Set threshold interrupt, an interrupt is triggered when the geomagnetic value of a channel is beyond/below the threshold
+      @n      High polarity   active on high level, the default is low level, which turns to high level when the interrupt is triggered.
+      @n      Low polarity    active on low level, the default is high level, which turns to low level when the interrupt is triggered.
+      @param modes
+      @n     LOW_THRESHOLD_INTERRUPT       Low threshold interrupt mode
+      @n     HIGH_THRESHOLD_INTERRUPT      High threshold interrupt mode
+      @param  threshold
+      @n     Threshold, default to expand 16 times, for example: under low threshold mode, if the threshold is set to be 1, actually the geomagnetic data below 16 will trigger an interrupt
+      @param polarity
+      @n     POLARITY_HIGH      High polarity
+      @n     POLARITY_LOW       Low polarity
+    '''
     if modes == LOW_THRESHOLD_INTERRUPT:
       self.__thresholdMode = LOW_THRESHOLD_INTERRUPT
-      self.setDataReadyPin(BMM350_ENABLE_INTERRUPT, polarity)
+      self.set_data_ready_pin(BMM350_ENABLE_INTERRUPT, polarity)
       self.threshold = threshold
     else:
       self.__thresholdMode = HIGH_THRESHOLD_INTERRUPT
-      self.setDataReadyPin(BMM350_ENABLE_INTERRUPT, polarity)
+      self.set_data_ready_pin(BMM350_ENABLE_INTERRUPT, polarity)
       self.threshold = threshold
     
-  '''!
-    @brief Get the data that threshold interrupt occured
-    @return Return the list for storing geomagnetic data, how the data at 3 axis influence interrupt status,
-    @n      [0] The data triggering threshold at x-axis, when the data is NO_DATA, the interrupt is triggered.
-    @n      [1] The data triggering threshold at y-axis, when the data is NO_DATA, the interrupt is triggered.
-    @n      [2] The data triggering threshold at z-axis, when the data is NO_DATA, the interrupt is triggered.
-  '''
-  def getThresholdData(self):
+
+  def get_threshold_data(self):
+    '''!
+      @brief Get the data that threshold interrupt occured
+      @return Return the list for storing geomagnetic data, how the data at 3 axis influence interrupt status,
+      @n      [0] The data triggering threshold at x-axis, when the data is NO_DATA, the interrupt is triggered.
+      @n      [1] The data triggering threshold at y-axis, when the data is NO_DATA, the interrupt is triggered.
+      @n      [2] The data triggering threshold at z-axis, when the data is NO_DATA, the interrupt is triggered.
+    '''
     Data = [NO_DATA] * 3
-    state = self.getDataReadyState()
+    state = self.get_data_ready_state()
     if state == True:
-      magData = self.getGeomagneticData()
+      magData = self.get_geomagnetic_data()
       if self.__thresholdMode == LOW_THRESHOLD_INTERRUPT:
         if magData[0] < self.threshold*16:
           Data[0] = magData[0]

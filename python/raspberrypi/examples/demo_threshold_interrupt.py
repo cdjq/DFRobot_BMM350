@@ -25,7 +25,7 @@ I2C_BUS         = 0x01   #default use I2C1
 bmm350 = DFRobot_bmm350_I2C(I2C_BUS, 0x14)
 
 def setup():
-  while BMM350_CHIP_ID_ERROR == bmm350.sensorInit():
+  while BMM350_CHIP_ID_ERROR == bmm350.sensor_init():
     print("sensor init error ,please check connect") 
     time.sleep(1)
 
@@ -38,12 +38,12 @@ def setup():
         BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
         BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
   '''
-  bmm350.setOperationMode(BMM350_NORMAL_MODE)
+  bmm350.set_operation_mode(BMM350_NORMAL_MODE)
 
   '''
     Get the operation mode character string of the sensor
   '''
-  print('Current power mode: ', bmm350.getOperationMode()) 
+  print('Current power mode: ', bmm350.get_operation_mode()) 
 
   '''
     Set preset mode, make it easier for users to configure sensor to get geomagnetic data  (The default rate for obtaining geomagnetic data is 12.5Hz)
@@ -53,7 +53,7 @@ def setup():
         BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a large number of data and draw the mean value.
         BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and draw the mean value.
   '''
-  bmm350.setPresetMode(BMM350_PRESETMODE_HIGHACCURACY)
+  bmm350.set_preset_mode(BMM350_PRESETMODE_HIGHACCURACY)
 
   '''
     Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
@@ -68,13 +68,13 @@ def setup():
         BMM350_DATA_RATE_200HZ
         BMM350_DATA_RATE_400HZ
   '''
-  bmm350.setRate(BMM350_DATA_RATE_25HZ)
+  bmm350.set_rate(BMM350_DATA_RATE_25HZ)
   
   '''
     Enable the measurement at x-axis, y-axis and z-axis, default to be enabled, no config required. When disabled, the geomagnetic data at x, y, and z will be inaccurate.
     Refer to readme file if you want to configure more parameters.
   '''
-  bmm350.setMeasurementXYZ()
+  bmm350.set_measurement_XYZ()
   
 
   '''
@@ -91,7 +91,7 @@ def setup():
         BMM350_ACTIVE_LOW                  Low polarity
       View the use method in the readme file if you want to use more configs
   '''
-  bmm350.setThresholdInterrupt(LOW_THRESHOLD_INTERRUPT, 0, BMM350_ACTIVE_LOW)
+  bmm350.set_threshold_interrupt(LOW_THRESHOLD_INTERRUPT, 0, BMM350_ACTIVE_LOW)
 
 
 def loop():
@@ -103,7 +103,7 @@ def loop():
       [1] The data triggering threshold at y-axis, when the data is NO_DATA, the interrupt is triggered.
       [2] The data triggering threshold at z-axis, when the data is NO_DATA, the interrupt is triggered.
   '''
-  threshold_data = bmm350.getThresholdData()
+  threshold_data = bmm350.get_threshold_data()
   if threshold_data[0] != NO_DATA:
     print("mag x = %d ut"%threshold_data[0]) 
   if threshold_data[1] != NO_DATA:

@@ -25,16 +25,16 @@ I2C_BUS         = 0x01   #default use I2C1
 bmm350 = DFRobot_bmm350_I2C(I2C_BUS, 0x14)
 
 def setup():
-  while BMM350_CHIP_ID_ERROR == bmm350.sensorInit():
+  while BMM350_CHIP_ID_ERROR == bmm350.sensor_init():
     print("sensor init error, please check connect")
     time.sleep(1)
 
-  print('Power mode after sensor initialization: ', bmm350.getOperationMode()) 
+  print('Power mode after sensor initialization: ', bmm350.get_operation_mode()) 
   
   '''
     Sensor self test, the returned character string indicates the test result.
   '''
-  print(bmm350.selfTest())
+  print(bmm350.self_test())
 
   '''
     Set sensor operation mode
@@ -45,12 +45,12 @@ def setup():
         BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
         BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
   '''
-  bmm350.setOperationMode(BMM350_NORMAL_MODE)
+  bmm350.set_operation_mode(BMM350_NORMAL_MODE)
 
   '''
     Get the operation mode character string of the sensor
   '''
-  print('Current power mode: ', bmm350.getOperationMode()) 
+  print('Current power mode: ', bmm350.get_operation_mode()) 
 
   '''
     Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
@@ -60,7 +60,7 @@ def setup():
         BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a large number of data and draw the mean value.
         BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and draw the mean value.
   '''
-  bmm350.setPresetMode(BMM350_PRESETMODE_HIGHACCURACY)
+  bmm350.set_preset_mode(BMM350_PRESETMODE_HIGHACCURACY)
 
   '''
     Set the rate of obtaining geomagnetic data, the higher, the faster (without delay function)
@@ -75,35 +75,35 @@ def setup():
         BMM350_DATA_RATE_200HZ
         BMM350_DATA_RATE_400HZ
   '''
-  bmm350.setRate(BMM350_DATA_RATE_25HZ)
+  bmm350.set_rate(BMM350_DATA_RATE_25HZ)
   
   '''
     Enable the measurement at x-axis, y-axis and z-axis, default to be enabled, no config required. When disabled, the geomagnetic data at x, y, and z will be inaccurate.
     Refer to readme file if you want to configure more parameters.
   '''
-  bmm350.setMeasurementXYZ()
+  bmm350.set_measurement_XYZ()
   
   '''
     Get the config data rate unit: HZ
   '''
-  print("rates is %d HZ"%bmm350.getRate() ) 
+  print("rates is %d HZ"%bmm350.get_rate() ) 
   
   '''
     Get the character string of enabling status at x-axis, y-axis and z-axis
   '''
-  print(bmm350.getMeasurementStateXYZ()) 
+  print(bmm350.get_measurement_state_XYZ()) 
   
   '''
     @brief Soft reset, restore to suspended mode after soft reset. (You need to manually enter the normal mode)
   '''
-  bmm350.softReset()
-  print('Power mode after software reset: ', bmm350.getOperationMode()) 
+  bmm350.soft_reset()
+  print('Power mode after software reset: ', bmm350.get_operation_mode()) 
   
 def loop():
   '''
     Get the operation mode character string of the sensor
   '''
-  print('Current power mode: ', bmm350.getOperationMode()) 
+  print('Current power mode: ', bmm350.get_operation_mode()) 
   exit()
   
 
