@@ -6,7 +6,7 @@
  * @author      [GDuang](yonglei.ren@dfrobot.com)
  * @version     V1.0.0
  * @date        2024-05-06
- * @url         https://github.com/dfrobot/DFRobot_BMM350
+ * @url         https://github.com/DFRobot/DFRobot_BMM350
  */
 #ifndef __DFRobot_BMM350_H__
 #define __DFRobot_BMM350_H__
@@ -33,21 +33,20 @@
 #define BMM350_SELF_TEST_NORMAL         UINT8_C(0x00)
 #define BMM350_SELF_TEST_ADVANCED       UINT8_C(0x01)
 
-enum eBMM350_INTERFACE {
-  eBMM350_INTERFACE_I2C = BMM350_INTERFACE_I2C,
-  eBMM350_INTERFACE_I3C = BMM350_INTERFACE_I3C
+enum eBmm350Interface_t {
+  eBmm350InterfaceI2C = BMM350_INTERFACE_I2C,
+  eBmm350InterfaceI3C = BMM350_INTERFACE_I3C
 };
 
-enum eBMM350_SELFTEST {
-  eBMM350_SELF_TEST_NORMAL = BMM350_SELF_TEST_NORMAL,
-  eBMM350_SELF_TEST_ADVANCED = BMM350_SELF_TEST_ADVANCED
+enum eBmm350SelfTest_t {
+  eBmm350SelfTestNormal = BMM350_SELF_TEST_NORMAL
 };
 
-void bmm350_delayUS(uint32_t period);
+void bmm350DelayUs(uint32_t period);
 
 class DFRobot_BMM350{
 public:
-  DFRobot_BMM350(bmm350_read_fptr_t bmm350_readReg, bmm350_write_fptr_t bmm350_writeReg, bmm350_delay_us_fptr_t bmm350_delayUS, eBMM350_INTERFACE interface);
+  DFRobot_BMM350(pBmm350ReadFptr_t bmm350ReadReg, pBmm350WriteFptr_t bmm350WriteReg, pBmm350DelayUsFptr_t bmm350DelayUs, eBmm350Interface_t interface);
 
   ~DFRobot_BMM350();
 
@@ -61,13 +60,13 @@ public:
    * @fn setOperationMode
    * @brief Set sensor operation mode
    * @param powermode
-   * @n BMM350_SUSPEND_MODE      suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
+   * @n eBmm350SuspendMode      suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
    *                                           so, this mode is useful for periods when data conversion is not needed. Read and write of all registers is possible.
-   * @n BMM350_NORMAL_MODE       normal mode: Get geomagnetic data normally.      
-   * @n BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
-   * @n BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
+   * @n eBmm350NormalMode       normal mode: Get geomagnetic data normally.      
+   * @n eBmm350ForcedMode       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
+   * @n eBmm350ForcedModeFast  To reach ODR = 200Hz is only possible by using FM_ FAST.
    */
-  void setOperationMode(enum bmm350_power_modes powermode);
+  void setOperationMode(enum eBmm350PowerModes_t powermode);
 
   /**
    * @fn getOperationMode
@@ -85,7 +84,7 @@ public:
    * @n BMM350_PRESETMODE_ENHANCED       Enhanced mode, get a plenty of data and take the mean value.
    * @n BMM350_PRESETMODE_HIGHACCURACY   High accuracy mode, get a huge number of data and take the mean value.
    */
-  void setPresetMode(uint8_t presetMode, enum bmm350_data_rates rate = BMM350_DATA_RATE_12_5HZ);
+  void setPresetMode(uint8_t presetMode, enum eBmm350DataRates_t rate = BMM350_DATA_RATE_12_5HZ);
 
   /**
    * @fn setRate
@@ -114,10 +113,10 @@ public:
    * @fn selfTest
    * @brief The sensor self test, the returned value indicate the self test result.
    * @param testMode:
-   * @n     eBMM350_SELF_TEST_NORMAL               Normal self test, test whether x-axis, y-axis and z-axis are connected or short-circuited
+   * @n     eBmm350SelfTestNormal               Normal self test, test whether x-axis, y-axis and z-axis are connected or short-circuited
    * @return result The returned character string is the self test result
    */
-  String selfTest(eBMM350_SELFTEST testMode = eBMM350_SELF_TEST_NORMAL);
+  String selfTest(eBmm350SelfTest_t testMode = eBmm350SelfTestNormal);
   
   /**
    * @fn setMeasurementXYZ
@@ -132,7 +131,7 @@ public:
    * @n   BMM350_Z_EN        Enable the measurement at z-axis
    * @n   BMM350_Z_DIS       Disable the measurement at z-axis
    */
-  void setMeasurementXYZ(enum bmm350_x_axis_en_dis en_x = BMM350_X_EN, enum bmm350_y_axis_en_dis en_y = BMM350_Y_EN, enum bmm350_z_axis_en_dis en_z = BMM350_Z_EN);
+  void setMeasurementXYZ(enum eBmm350XAxisEnDis_t enX = BMM350_X_EN, enum eBmm350YAxisEnDis_t enY = BMM350_Y_EN, enum eBmm350ZAxisEnDis_t enZ = BMM350_Z_EN);
 
   /**
    * @fn getMeasurementStateXYZ
@@ -171,19 +170,19 @@ public:
    * @n     BMM350_ACTIVE_HIGH              High polarity
    * @n     BMM350_ACTIVE_LOW               Low polarity
    */
-  void setDataReadyPin(enum bmm350_interrupt_enable_disable modes, enum bmm350_intr_polarity polarity=BMM350_ACTIVE_HIGH);
+  void setDataReadyPin(enum eBmm350InterruptEnableDisable_t modes, enum eBmm350IntrPolarity_t polarity=BMM350_ACTIVE_HIGH);
 
   /**
    * @fn getDataReadyState
    * @brief Get the data ready status, determine whether the data is ready
    * @return status
-   * @n true  Data ready
-   * @n false Data is not ready
+   * @retval true  Data ready
+   * @retval false Data is not ready
    */
   bool getDataReadyState(void);
 
   /**
-   * @fn setThresholdInterrupt(uint8_t modes, int8_t threshold, uint8_t polarity)
+   * @fn setThresholdInterrupt(uint8_t modes, int8_t threshold, enum eBmm350IntrPolarity_t polarity)
    * @brief Set threshold interrupt, an interrupt is triggered when the geomagnetic value of a channel is beyond/below the threshold
    * @n      High polarity: active on high level, the default is low level, which turns to high level when the interrupt is triggered.
    * @n      Low polarity: active on low level, the default is high level, which turns to low level when the interrupt is triggered.
@@ -196,7 +195,7 @@ public:
    * @n     POLARITY_HIGH      High polarity
    * @n     POLARITY_LOW       Low polarity
    */
-  void setThresholdInterrupt(uint8_t modes, int8_t threshold, enum bmm350_intr_polarity polarity);
+  void setThresholdInterrupt(uint8_t modes, int8_t threshold, enum eBmm350IntrPolarity_t polarity);
 
   /**
    * @fn getThresholdData
@@ -212,9 +211,9 @@ protected:
   /**
    * @fn sensorInit
    * @brief Init bmm350 check whether the chip id is right
-   * @return state
-   * @n     true is   Chip id is right init succeeds
-   * @n     false is  Chip id is wrong init failed
+   * @return  state
+   * @retval  true  Chip id is right init succeeds
+   * @retval  false Chip id is wrong init failed
    */
   bool sensorInit(void);
 
@@ -227,7 +226,7 @@ protected:
 
 private:
   uint8_t __thresholdMode = 3;
-  uint8_t threshold = 0;
+  int8_t threshold = 0;
   sBmm350ThresholdData_t thresholdData;
 };
 

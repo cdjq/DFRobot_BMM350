@@ -7,7 +7,7 @@
   @author      [GDuang](yonglei.ren@dfrobot.com)
   @version     V1.0.0
   @date        2024-05-06
-  @url         https://github.com/dfrobot/DFRobot_BMM350
+  @url         https://github.com/DFRobot/DFRobot_BMM350
 '''
 import serial
 import time
@@ -777,6 +777,9 @@ M_PI	    = 3.14159265358979323846
 
 
 # --------------------------------------------
+'''!
+  @brief bmm350 magnetometer dut offset coefficient structure
+'''
 class bmm350_dut_offset_coef:
     def __init__(self, t_offs: float, offset_x: float, offset_y: float, offset_z: float):
         self.t_offs = t_offs
@@ -784,6 +787,9 @@ class bmm350_dut_offset_coef:
         self.offset_y = offset_y
         self.offset_z = offset_z
 
+'''!
+  @brief bmm350 magnetometer dut sensitivity coefficient structure
+'''
 class bmm350_dut_sensit_coef:
     def __init__(self, t_sens: float, sens_x: float, sens_y: float, sens_z: float):
         self.t_sens = t_sens
@@ -791,18 +797,26 @@ class bmm350_dut_sensit_coef:
         self.sens_y = sens_y
         self.sens_z = sens_z
 
+'''!
+  @brief bmm350 magnetometer dut tco structure
+'''
 class bmm350_dut_tco:
     def __init__(self, tco_x: float, tco_y: float, tco_z: float):
         self.tco_x = tco_x
         self.tco_y = tco_y
         self.tco_z = tco_z
-
+'''!
+  @brief bmm350 magnetometer dut tcs structure
+'''
 class bmm350_dut_tcs:
     def __init__(self, tcs_x: float, tcs_y: float, tcs_z: float):
         self.tcs_x = tcs_x
         self.tcs_y = tcs_y
         self.tcs_z = tcs_z
 
+'''!
+  @brief bmm350 magnetometer cross axis compensation structure
+'''
 class bmm350_cross_axis:
     def __init__(self, cross_x_y: float, cross_y_x: float, cross_z_x: float, cross_z_y: float):
         self.cross_x_y = cross_x_y
@@ -810,6 +824,9 @@ class bmm350_cross_axis:
         self.cross_z_x = cross_z_x
         self.cross_z_y = cross_z_y
 
+'''!
+  @brief bmm350 magnetometer compensate structure
+'''
 class bmm350_mag_compensate:
     def __init__(self, dut_offset_coef: bmm350_dut_offset_coef, dut_sensit_coef: bmm350_dut_sensit_coef, dut_tco: bmm350_dut_tco, dut_tcs: bmm350_dut_tcs, dut_t0: float, cross_axis: bmm350_cross_axis):
         self.dut_offset_coef = dut_offset_coef
@@ -819,6 +836,9 @@ class bmm350_mag_compensate:
         self.dut_t0 = dut_t0
         self.cross_axis = cross_axis
 
+'''!
+  @brief bmm350 device structure
+'''
 class bmm350_dev:
   def __init__(self, mag_comp: bmm350_mag_compensate):
     self.chipID   = 0
@@ -1031,8 +1051,9 @@ class DFRobot_bmm350(object):
   def sensor_init(self):
     '''!
       @brief Init bmm350 check whether the chip id is right
-      @return 0  is init success
-              -1 is init failed
+      @return 
+      @retval 0  is init success
+      @retval -1 is init failed
     '''
     rslt = BMM350_OK
     # Specifies that all axes are enabled
@@ -1140,7 +1161,7 @@ class DFRobot_bmm350(object):
       @n BMM350_DATA_RATE_200HZ
       @n BMM350_DATA_RATE_400HZ
     '''
-    self.bmm350_set_powermode(BMM350_NORMAL_MODE)
+    # self.bmm350_set_powermode(BMM350_NORMAL_MODE)
     avg_odr_reg = self.read_reg(BMM350_REG_PMU_CMD_AGGR_SET, 1)
     avg_reg = self.BMM350_GET_BITS(avg_odr_reg[0], BMM350_AVG_MSK, BMM350_AVG_POS)
     reg_data = (rates & BMM350_ODR_MSK)

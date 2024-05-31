@@ -113,7 +113,7 @@ struct bmm350_oor_params
  *  @retval < 0 -> Error
  */
 int8_t bmm350_oor_read(bool *out_of_range,
-                       struct bmm350_mag_temp_data *data,
+                       struct sBmm350MagTempData_t *data,
                        struct bmm350_oor_params *oor,
                        struct bmm350_dev *dev);
 

@@ -7,20 +7,20 @@
  * @author      [GDuang](yonglei.ren@dfrobot.com)
  * @version     V1.0.0
  * @date        2024-05-06
- * @url         https://github.com/dfrobot/DFRobot_BMM350
+ * @url         https://github.com/DFRobot/DFRobot_BMM350
  */
 
 #include "DFRobot_BMM350.h"
 
-static struct        bmm350_dev bmm350_sensor;
+static struct        bmm350_dev bmm350Sensor;
 /*! Variable that holds the I2C device address selection */
-static uint8_t dev_addr;
+static uint8_t devAddr;
 TwoWire *_pWire = NULL;
-uint8_t bmm350_I2CAddr = 0;
+uint8_t bmm350I2CAddr = 0;
 
-void bmm350_delayUS(uint32_t period, void*intf_ptr)
+void bmm350DelayUs(uint32_t period, void*intfPtr)
 {
-    UNUSED(intf_ptr);
+    UNUSED(intfPtr);
     if(period > 1000){
         delay(period/1000);
     }else{
@@ -28,19 +28,19 @@ void bmm350_delayUS(uint32_t period, void*intf_ptr)
     }
 }
 
-DFRobot_BMM350::DFRobot_BMM350(bmm350_read_fptr_t bmm350_readReg, bmm350_write_fptr_t bmm350_writeReg, bmm350_delay_us_fptr_t bmm350_delayUS, eBMM350_INTERFACE interface)
+DFRobot_BMM350::DFRobot_BMM350(pBmm350ReadFptr_t bmm350ReadReg, pBmm350WriteFptr_t bmm350WriteReg, pBmm350DelayUsFptr_t bmm350DelayUs, eBmm350Interface_t interface)
 {
     switch(interface) {
-        case eBMM350_INTERFACE_I2C: 
-            dev_addr = BMM350_I2C_ADSEL_SET_LOW;
-            bmm350_sensor.intf_ptr = &dev_addr;
+        case eBmm350InterfaceI2C: 
+            devAddr = BMM350_I2C_ADSEL_SET_LOW;
+            bmm350Sensor.intfPtr = &devAddr;
             break;
-        case eBMM350_INTERFACE_I3C: 
+        case eBmm350InterfaceI3C: 
             break;
     }
-    bmm350_sensor.read = bmm350_readReg;
-    bmm350_sensor.write = bmm350_writeReg;
-    bmm350_sensor.delay_us = bmm350_delayUS;
+    bmm350Sensor.read = bmm350ReadReg;
+    bmm350Sensor.write = bmm350WriteReg;
+    bmm350Sensor.delayUs = bmm350DelayUs;
 }
 
 DFRobot_BMM350::~DFRobot_BMM350()
@@ -49,41 +49,40 @@ DFRobot_BMM350::~DFRobot_BMM350()
 
 bool DFRobot_BMM350::sensorInit(void)
 {
-    return bmm350_init(&bmm350_sensor) == 0;
+    return bmm350Init(&bmm350Sensor) == 0;
 }
 
 uint8_t DFRobot_BMM350::getChipID(void)
 {
-    return bmm350_sensor.chip_id;
+    return bmm350Sensor.chipId;
 }
 
 void DFRobot_BMM350::softReset(void)
 {
-    bmm350_soft_reset(&bmm350_sensor);
-    bmm350_set_powermode(BMM350_SUSPEND_MODE, &bmm350_sensor);
-
+    bmm350SoftReset(&bmm350Sensor);
+    bmm350SetPowerMode(eBmm350SuspendMode, &bmm350Sensor);
 }
 
-void DFRobot_BMM350::setOperationMode(enum bmm350_power_modes powermode)
+void DFRobot_BMM350::setOperationMode(enum eBmm350PowerModes_t powermode)
 {
-    bmm350_set_powermode(powermode, &bmm350_sensor);
+    bmm350SetPowerMode(powermode, &bmm350Sensor);
 }
 
 String DFRobot_BMM350::getOperationMode(void)
 {
     String result;
-    switch(bmm350_sensor.power_mode){
-        case BMM350_SUSPEND_MODE:
+    switch(bmm350Sensor.powerMode){
+        case eBmm350SuspendMode:
             result = "bmm350 is suspend mode!";
             break;
-        case BMM350_NORMAL_MODE:
+        case eBmm350NormalMode:
             result = "bmm350 is normal mode!";
             break;
-        case BMM350_FORCED_MODE:
+        case eBmm350ForcedMode:
             result = "bmm350 is forced mode!";
             break;
-        case BMM350_FORCED_MODE_FAST:
-            result = "bmm350 is forced_fast mode!";
+        case eBmm350ForcedModeFast:
+            result = "bmm350 is forced_fast mode!";  
             break;
         default:
             result = "error mode!";
@@ -92,20 +91,20 @@ String DFRobot_BMM350::getOperationMode(void)
     return result;
 }
 
-void DFRobot_BMM350::setPresetMode(uint8_t presetMode, enum bmm350_data_rates rate)
+void DFRobot_BMM350::setPresetMode(uint8_t presetMode, enum eBmm350DataRates_t rate)
 {
     switch (presetMode){
         case BMM350_PRESETMODE_LOWPOWER:
-            bmm350_set_odr_performance(rate, BMM350_NO_AVERAGING, &bmm350_sensor);
+            bmm350SetOdrPerformance(rate, BMM350_NO_AVERAGING, &bmm350Sensor);
             break;
         case BMM350_PRESETMODE_REGULAR:
-            bmm350_set_odr_performance(rate, BMM350_AVERAGING_2, &bmm350_sensor);
+            bmm350SetOdrPerformance(rate, BMM350_AVERAGING_2, &bmm350Sensor);
             break;
         case BMM350_PRESETMODE_ENHANCED:
-            bmm350_set_odr_performance(rate, BMM350_AVERAGING_4, &bmm350_sensor);
+            bmm350SetOdrPerformance(rate, BMM350_AVERAGING_4, &bmm350Sensor);
             break;
         case BMM350_PRESETMODE_HIGHACCURACY:
-            bmm350_set_odr_performance(rate, BMM350_AVERAGING_8, &bmm350_sensor);
+            bmm350SetOdrPerformance(rate, BMM350_AVERAGING_8, &bmm350Sensor);
             break;
         default:
             break;
@@ -117,11 +116,9 @@ void DFRobot_BMM350::setRate(uint8_t rate)
     /* Variable to store the function result */
     int8_t rslt;
 
-    uint8_t avg_odr_reg = 0;
-    uint8_t avg_reg = 0;
-    uint8_t reg_data = 0;
-
-    bmm350_set_powermode(BMM350_NORMAL_MODE, &bmm350_sensor);
+    uint8_t avgOdrReg = 0;
+    uint8_t avgReg = 0;
+    uint8_t regData = 0;
 
     switch(rate){
         case BMM350_DATA_RATE_1_5625HZ:
@@ -134,24 +131,24 @@ void DFRobot_BMM350::setRate(uint8_t rate)
         case BMM350_DATA_RATE_200HZ:
         case BMM350_DATA_RATE_400HZ:
             /* Get the configurations for ODR and performance */
-            rslt = bmm350_get_regs(BMM350_REG_PMU_CMD_AGGR_SET, &avg_odr_reg, 1, &bmm350_sensor);
+            rslt = bmm350GetRegs(BMM350_REG_PMU_CMD_AGGR_SET, &avgOdrReg, 1, &bmm350Sensor);
             if (rslt == BMM350_OK){
                 /* Read the performance status */
-                avg_reg = BMM350_GET_BITS(avg_odr_reg, BMM350_AVG);
+                avgReg = BMM350_GET_BITS(avgOdrReg, BMM350_AVG);
             }
             /* ODR is an enum taking the generated constants from the register map */
-            reg_data = ((uint8_t)rate & BMM350_ODR_MSK);
+            regData = ((uint8_t)rate & BMM350_ODR_MSK);
             /* AVG / performance is an enum taking the generated constants from the register map */
-            reg_data = BMM350_SET_BITS(reg_data, BMM350_AVG, (uint8_t)avg_reg);
+            regData = BMM350_SET_BITS(regData, BMM350_AVG, (uint8_t)avgReg);
             /* Set PMU command configurations for ODR and performance */
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD_AGGR_SET, &reg_data, 1, &bmm350_sensor);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD_AGGR_SET, &regData, 1, &bmm350Sensor);
             if (rslt == BMM350_OK){
                 /* Set PMU command configurations to update odr and average */
-                reg_data = BMM350_PMU_CMD_UPD_OAE;
+                regData = BMM350_PMU_CMD_UPD_OAE;
                 /* Set PMU command configuration */
-                rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &reg_data, 1, &bmm350_sensor);
+                rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &regData, 1, &bmm350Sensor);
                 if (rslt == BMM350_OK){
-                    rslt = bmm350_delay_us(BMM350_UPD_OAE_DELAY, &bmm350_sensor);
+                    rslt = bmm350DelayUs(BMM350_UPD_OAE_DELAY, &bmm350Sensor);
                 }
             }
             break;
@@ -165,17 +162,17 @@ float DFRobot_BMM350::getRate(void)
     /* Variable to store the function result */
     int8_t rslt;
 
-    uint8_t avg_odr_reg = 0;
-    uint8_t odr_reg = 0;
+    uint8_t avgOdrReg = 0;
+    uint8_t odrReg = 0;
     float result = 0;
 
     /* Get the configurations for ODR and performance */
-    rslt = bmm350_get_regs(BMM350_REG_PMU_CMD_AGGR_SET, &avg_odr_reg, 1, &bmm350_sensor);
+    rslt = bmm350GetRegs(BMM350_REG_PMU_CMD_AGGR_SET, &avgOdrReg, 1, &bmm350Sensor);
     if (rslt == BMM350_OK){
         /* Read the performance status */
-        odr_reg = BMM350_GET_BITS(avg_odr_reg, BMM350_ODR);
+        odrReg = BMM350_GET_BITS(avgOdrReg, BMM350_ODR);
     }
-    switch(odr_reg){
+    switch(odrReg){
         case BMM350_DATA_RATE_1_5625HZ:
             result = 1.5625;
             break;
@@ -206,134 +203,141 @@ float DFRobot_BMM350::getRate(void)
         default:
             break;
     }
-  return result;
+    return result;
 }
 
-String DFRobot_BMM350::selfTest(eBMM350_SELFTEST testMode)
+String DFRobot_BMM350::selfTest(eBmm350SelfTest_t testMode)
 {
-    int8_t rslt;
     String result;
     /* Structure instance of self-test data */
-    struct bmm350_self_test st_data;
-    memset(&st_data, 0, sizeof(st_data));
+    struct sBmm350SelfTest_t stData;
+    memset(&stData, 0, sizeof(stData));
     switch(testMode){
-        case eBMM350_SELF_TEST_NORMAL:
-            rslt = bmm350_perform_self_test(&st_data, &bmm350_sensor);
-            if(rslt == 0){
-                result = "xyz aixs self test success!";
+        case eBmm350SelfTestNormal:
+            setOperationMode(eBmm350NormalMode);
+            setMeasurementXYZ();
+            sBmm350MagData_t magData = getGeomagneticData();
+            if((magData.x < 2000) && (magData.x > -2000)){
+                result += "x aixs self test success!\n";
             }else{
-                result = "xyz aixs self test failed!";
+                result += "x aixs self test failed!\n";
             }
-            bmm350_set_powermode(BMM350_SUSPEND_MODE, &bmm350_sensor); 
-            break;
-        case eBMM350_SELF_TEST_ADVANCED:
-            result = "eBMM350_SELF_TEST_ADVANCED, To be realized!";
+            if((magData.y < 2000) && (magData.y > -2000)){
+                result += "y aixs self test success!\n";
+            }else{
+                result += "y aixs self test failed!\n";
+            }
+            if((magData.z < 2000) && (magData.z > -2000)){
+                result += "z aixs self test success!\n";
+            }else{
+                result += "z aixs self test failed!\n";
+            }
             break;
     }
     return result;
 }
 
-void DFRobot_BMM350::setMeasurementXYZ(enum bmm350_x_axis_en_dis en_x, enum bmm350_y_axis_en_dis en_y, enum bmm350_z_axis_en_dis en_z)
+void DFRobot_BMM350::setMeasurementXYZ(enum eBmm350XAxisEnDis_t enX, enum eBmm350YAxisEnDis_t enY, enum eBmm350ZAxisEnDis_t enZ)
 {
-    bmm350_enable_axes(en_x, en_y, en_z, &bmm350_sensor);
+    bmm350_enable_axes(enX, enY, enZ, &bmm350Sensor);
 }
 
 String DFRobot_BMM350::getMeasurementStateXYZ(void)
 {
-    uint8_t axis_reg = 0;
-    uint8_t en_x = 0;
-    uint8_t en_y = 0;
-    uint8_t en_z = 0;
+    uint8_t axisReg = 0;
+    uint8_t enX = 0;
+    uint8_t enY = 0;
+    uint8_t enZ = 0;
     char result[100] = "";
 
     /* Get the configurations for ODR and performance */
-    axis_reg = bmm350_sensor.axis_en;
+    axisReg = bmm350Sensor.axisEn;
     
     /* Read the performance status */
-    en_x = BMM350_GET_BITS(axis_reg, BMM350_EN_X);
-    en_y = BMM350_GET_BITS(axis_reg, BMM350_EN_Y);
-    en_z = BMM350_GET_BITS(axis_reg, BMM350_EN_Z);
+    enX = BMM350_GET_BITS(axisReg, BMM350_EN_X);
+    enY = BMM350_GET_BITS(axisReg, BMM350_EN_Y);
+    enZ = BMM350_GET_BITS(axisReg, BMM350_EN_Z);
     
-    strcat(result, (en_x == 1 ? "The x axis is enable! " : "The x axis is disable! "));
-    strcat(result, (en_y == 1 ? "The y axis is enable! " : "The y axis is disable! "));
-    strcat(result, (en_z == 1 ? "The z axis is enable! " : "The z axis is disable! "));
+    strcat(result, (enX == 1 ? "The x axis is enable! " : "The x axis is disable! "));
+    strcat(result, (enY == 1 ? "The y axis is enable! " : "The y axis is disable! "));
+    strcat(result, (enZ == 1 ? "The z axis is enable! " : "The z axis is disable! "));
     return result;
 }
 
 sBmm350MagData_t DFRobot_BMM350::getGeomagneticData(void)
 {   
     sBmm350MagData_t magData;
-    struct bmm350_mag_temp_data mag_temp_data;
+    struct sBmm350MagTempData_t magTempData;
     memset(&magData, 0, sizeof(magData));
-    memset(&mag_temp_data, 0, sizeof(mag_temp_data));
-    bmm350_get_compensated_mag_xyz_temp_data(&mag_temp_data, &bmm350_sensor);
-    magData.x = mag_temp_data.x;
-    magData.y = mag_temp_data.y;
-    magData.z = mag_temp_data.z;
-    magData.temperature = mag_temp_data.temperature;
-    magData.float_x = mag_temp_data.x;
-    magData.float_y = mag_temp_data.y;
-    magData.float_z = mag_temp_data.z;
-    magData.float_temperature = mag_temp_data.temperature;
+    memset(&magTempData, 0, sizeof(magTempData));
+    bmm350GetCompensatedMagXYZTempData(&magTempData, &bmm350Sensor);
+    magData.x = magTempData.x;
+    magData.y = magTempData.y;
+    magData.z = magTempData.z;
+    magData.temperature = magTempData.temperature;
+    magData.float_x = magTempData.x;
+    magData.float_y = magTempData.y;
+    magData.float_z = magTempData.z;
+    magData.float_temperature = magTempData.temperature;
     return magData;
 }
 
 float DFRobot_BMM350::getCompassDegree(void)
 {
-  float compass = 0.0;
-  sBmm350MagData_t magData = getGeomagneticData();
-  compass = atan2(magData.x, magData.y);
-  if (compass < 0) {
-    compass += 2 * PI;
-  }
-  if (compass > 2 * PI) {
-     compass -= 2 * PI;
-  }
-  return compass * 180 / M_PI;
+    float compass = 0.0;
+    sBmm350MagData_t magData = getGeomagneticData();
+    compass = atan2(magData.x, magData.y);
+    if (compass < 0) {
+        compass += 2 * PI;
+    }
+    if (compass > 2 * PI) {
+        compass -= 2 * PI;
+    }
+    return compass * 180 / M_PI;
 }
 
-void DFRobot_BMM350::setDataReadyPin(enum bmm350_interrupt_enable_disable modes, enum bmm350_intr_polarity polarity)
+void DFRobot_BMM350::setDataReadyPin(enum eBmm350InterruptEnableDisable_t modes, enum eBmm350IntrPolarity_t polarity)
 {
     /* Variable to get interrupt control configuration */
-    uint8_t reg_data = 0;
+    uint8_t regData = 0;
     /* Variable to store the function result */
     int8_t rslt;
     /* Get interrupt control configuration */
-    rslt = bmm350_get_regs(BMM350_REG_INT_CTRL, &reg_data, 1, &bmm350_sensor);
+    rslt = bmm350GetRegs(BMM350_REG_INT_CTRL, &regData, 1, &bmm350Sensor);
     if (rslt == BMM350_OK)
     {
-        reg_data = BMM350_SET_BITS_POS_0(reg_data, BMM350_INT_MODE, BMM350_PULSED);
-        reg_data = BMM350_SET_BITS(reg_data, BMM350_INT_POL, polarity);
-        reg_data = BMM350_SET_BITS(reg_data, BMM350_INT_OD, BMM350_INTR_PUSH_PULL);     
-        reg_data = BMM350_SET_BITS(reg_data, BMM350_INT_OUTPUT_EN, BMM350_MAP_TO_PIN); 
-        reg_data = BMM350_SET_BITS(reg_data, BMM350_DRDY_DATA_REG_EN, (uint8_t)modes);
+        regData = BMM350_SET_BITS_POS_0(regData, BMM350_INT_MODE, BMM350_PULSED);
+        regData = BMM350_SET_BITS(regData, BMM350_INT_POL, polarity);
+        regData = BMM350_SET_BITS(regData, BMM350_INT_OD, BMM350_INTR_PUSH_PULL);     
+        regData = BMM350_SET_BITS(regData, BMM350_INT_OUTPUT_EN, BMM350_MAP_TO_PIN); 
+        regData = BMM350_SET_BITS(regData, BMM350_DRDY_DATA_REG_EN, (uint8_t)modes);
         /* Finally transfer the interrupt configurations */
-        rslt = bmm350_set_regs(BMM350_REG_INT_CTRL, &reg_data, 1, &bmm350_sensor);
+        rslt = bmm350SetRegs(BMM350_REG_INT_CTRL, &regData, 1, &bmm350Sensor);
     }
 }
 
 bool DFRobot_BMM350::getDataReadyState(void)
 {
-    uint8_t drdy_status = 0x0;
-    bmm350_get_interrupt_status(&drdy_status, &bmm350_sensor);
-    if(drdy_status & 0x01){
+    uint8_t drdyStatus = 0x0;
+    bmm350GetInterruptStatus(&drdyStatus, &bmm350Sensor);
+    if(drdyStatus & 0x01){
         return true;
     }else{
         return false;
     }
 }
 
-void DFRobot_BMM350::setThresholdInterrupt(uint8_t modes, int8_t threshold, enum bmm350_intr_polarity polarity)
+void DFRobot_BMM350::setThresholdInterrupt(uint8_t modes, int8_t threshold, enum eBmm350IntrPolarity_t polarity)
 {
-  if(modes == LOW_THRESHOLD_INTERRUPT){
-    __thresholdMode = LOW_THRESHOLD_INTERRUPT;
-    setDataReadyPin(BMM350_ENABLE_INTERRUPT, polarity);
-    this->threshold = threshold;
-  }else{
-    __thresholdMode = HIGH_THRESHOLD_INTERRUPT;
-    setDataReadyPin(BMM350_ENABLE_INTERRUPT, polarity);
-    this->threshold = threshold;
-  }
+    if(modes == LOW_THRESHOLD_INTERRUPT){
+        __thresholdMode = LOW_THRESHOLD_INTERRUPT;
+        setDataReadyPin(BMM350_ENABLE_INTERRUPT, polarity);
+        this->threshold = threshold;
+    }else{
+        __thresholdMode = HIGH_THRESHOLD_INTERRUPT;
+        setDataReadyPin(BMM350_ENABLE_INTERRUPT, polarity);
+        this->threshold = threshold;
+    }
 }
 
 sBmm350ThresholdData_t DFRobot_BMM350::getThresholdData(void)
@@ -381,18 +385,18 @@ sBmm350ThresholdData_t DFRobot_BMM350::getThresholdData(void)
     return thresholdData;
 }
 
-static int8_t bmm350_i2c_readData(uint8_t Reg, uint8_t *Data ,uint32_t len, void *intf_ptr)
+static int8_t bmm350I2cReadData(uint8_t Reg, uint8_t *Data ,uint32_t len, void *intfPtr)
 {
-    uint8_t device_addr = *(uint8_t*)intf_ptr;
+    uint8_t deviceAddr = *(uint8_t*)intfPtr;
     _pWire->begin();
     int i=0;
-    _pWire->beginTransmission(device_addr);
+    _pWire->beginTransmission(deviceAddr);
     _pWire->write(Reg);
     if(_pWire->endTransmission() != 0)
     {
         return -1;
     }
-    _pWire->requestFrom(device_addr, (uint8_t)len);
+    _pWire->requestFrom(deviceAddr, (uint8_t)len);
     while (_pWire->available())
     {
         Data[i++]=_pWire->read();
@@ -400,11 +404,11 @@ static int8_t bmm350_i2c_readData(uint8_t Reg, uint8_t *Data ,uint32_t len, void
     return 0;
 }
 
-static int8_t bmm350_i2c_writeData(uint8_t Reg, const uint8_t *Data, uint32_t len, void *intf_ptr)
+static int8_t bmm350I2cWriteData(uint8_t Reg, const uint8_t *Data, uint32_t len, void *intfPtr)
 {
-    uint8_t device_addr = *(uint8_t*)intf_ptr;
+    uint8_t deviceAddr = *(uint8_t*)intfPtr;
     _pWire->begin();
-    _pWire->beginTransmission(device_addr);
+    _pWire->beginTransmission(deviceAddr);
     _pWire->write(Reg);
     for(uint8_t i = 0; i < len; i++)
     {
@@ -414,16 +418,16 @@ static int8_t bmm350_i2c_writeData(uint8_t Reg, const uint8_t *Data, uint32_t le
     return 0;
 }
 
-DFRobot_BMM350_I2C::DFRobot_BMM350_I2C(TwoWire *pWire, uint8_t addr): DFRobot_BMM350(bmm350_i2c_readData, bmm350_i2c_writeData, bmm350_delayUS, eBMM350_INTERFACE_I2C)
+DFRobot_BMM350_I2C::DFRobot_BMM350_I2C(TwoWire *pWire, uint8_t addr): DFRobot_BMM350(bmm350I2cReadData, bmm350I2cWriteData, bmm350DelayUs, eBmm350InterfaceI2C)
 {
-  _pWire = pWire;
-  bmm350_I2CAddr = addr;
+    _pWire = pWire;
+    bmm350I2CAddr = addr;
 }
 
 uint8_t DFRobot_BMM350_I2C::begin()
 {
     _pWire->begin();
-    _pWire->beginTransmission(bmm350_I2CAddr);
+    _pWire->beginTransmission(bmm350I2CAddr);
     if(_pWire->endTransmission() == 0){
         if(sensorInit()){
             return 0;

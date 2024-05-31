@@ -63,9 +63,9 @@ extern "C" {
 
 /*!
 * \ingroup bmm350ApiInit
-* \page bmm350_api_bmm350_init bmm350_init
+* \page bmm350_api_bmm350Init bmm350Init
 * \code
-* int8_t bmm350_init(struct bmm350_dev *dev);
+* int8_t bmm350Init(struct bmm350_dev *dev);
 * \endcode
 * @details This API is the entry point. Call this API before using other APIs.
 *  This API reads the chip-id of the sensor which is the first step to
@@ -78,7 +78,7 @@ extern "C" {
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_init(struct bmm350_dev *dev);
+int8_t bmm350Init(struct bmm350_dev *dev);
 
 /**
  * \ingroup bmm350
@@ -88,9 +88,9 @@ int8_t bmm350_init(struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiReset
-* \page bmm350_api_bmm350_soft_reset bmm350_soft_reset
+* \page bmm350_api_bmm350SoftReset bmm350SoftReset
 * \code
-* int8_t bmm350_soft_reset(struct bmm350_dev *dev);
+* int8_t bmm350SoftReset(struct bmm350_dev *dev);
 * \endcode
 * @details This API is used to perform soft-reset of the sensor
 * where all the registers are reset to their default values.
@@ -102,7 +102,7 @@ int8_t bmm350_init(struct bmm350_dev *dev);
 *  @retval < 0 -> Error
 */
 
-int8_t bmm350_soft_reset(struct bmm350_dev *dev);
+int8_t bmm350SoftReset(struct bmm350_dev *dev);
 
 /**
  * \ingroup bmm350
@@ -112,9 +112,9 @@ int8_t bmm350_soft_reset(struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiSetGet
-* \page bmm350_api_bmm350_set_regs bmm350_set_regs
+* \page bmm350_api_bmm350SetRegs bmm350SetRegs
 * \code
-* int8_t bmm350_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
+* int8_t bmm350SetRegs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
 * \endcode
 * @details This API writes the given data to the register address
 * of the sensor.
@@ -129,13 +129,13 @@ int8_t bmm350_soft_reset(struct bmm350_dev *dev);
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
+int8_t bmm350SetRegs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiSetGet
-* \page bmm350_api_bmm350_get_regs bmm350_get_regs
+* \page bmm350_api_bmm350GetRegs bmm350GetRegs
 * \code
-* int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
+* int8_t bmm350GetRegs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
 * \endcode
 * @details This API reads the data from the given register address of sensor.
 *
@@ -148,7 +148,7 @@ int8_t bmm350_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, 
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
+int8_t bmm350GetRegs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev);
 
 /**
  * \ingroup bmm350
@@ -158,9 +158,9 @@ int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct
 
 /*!
 * \ingroup bmm350ApiDelay
-* \page bmm350_api_bmm350_delay_us bmm350_delay_us
+* \page bmm350_api_bmm350DelayUs bmm350DelayUs
 * \code
-* int8_t bmm350_delay_us(uint32_t period_us, const struct bmm350_dev *dev);
+* int8_t bmm350DelayUs(uint32_t period_us, const struct bmm350_dev *dev);
 * \endcode
 * @details This function provides the delay for required time (Microsecond) as per the input provided in some of the
 * APIs.
@@ -172,13 +172,13 @@ int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_delay_us(uint32_t period_us, const struct bmm350_dev *dev);
+int8_t bmm350DelayUs(uint32_t period_us, const struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiSetGet
-* \page bmm350_api_bmm350_get_interrupt_status bmm350_get_interrupt_status
+* \page bmm350_api_bmm350GetInterruptStatus bmm350GetInterruptStatus
 * \code
-* int8_t bmm350_get_interrupt_status(uint8_t *drdy_status, struct bmm350_dev *dev);
+* int8_t bmm350GetInterruptStatus(uint8_t *drdy_status, struct bmm350_dev *dev);
 * \endcode
 * @details This API obtains the status flags of all interrupt
 * which is used to check for the assertion of interrupts
@@ -191,13 +191,13 @@ int8_t bmm350_delay_us(uint32_t period_us, const struct bmm350_dev *dev);
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_get_interrupt_status(uint8_t *drdy_status, struct bmm350_dev *dev);
+int8_t bmm350GetInterruptStatus(uint8_t *drdy_status, struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiSetGet
-* \page bmm350_api_bmm350_set_powermode bmm350_set_powermode
+* \page bmm350_api_bmm350SetPowerMode bmm350SetPowerMode
 * \code
-* int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev *dev);
+* int8_t bmm350SetPowerMode(enum eBmm350PowerModes_t powermode, struct bmm350_dev *dev);
 * \endcode
 * @details This API is used to set the power mode of the sensor
 *
@@ -207,23 +207,23 @@ int8_t bmm350_get_interrupt_status(uint8_t *drdy_status, struct bmm350_dev *dev)
 *@verbatim
                 powermode |   Power mode
  -------------------------|-----------------------
-                          |  BMM350_SUSPEND_MODE
-                          |  BMM350_NORMAL_MODE
-                          |  BMM350_FORCED_MODE
-                          |  BMM350_FORCED_MODE_FAST
+                          |  eBmm350SuspendMode
+                          |  eBmm350NormalMode
+                          |  eBmm350ForcedMode
+                          |  eBmm350ForcedModeFast
 *@endverbatim
 *
 * @return Result of API execution status
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev *dev);
+int8_t bmm350SetPowerMode(enum eBmm350PowerModes_t powermode, struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiSetGet
-* \page bmm350_api_bmm350_set_odr_performance bmm350_set_odr_performance
+* \page bmm350_api_bmm350SetOdrPerformance bmm350SetOdrPerformance
 * \code
-* int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
+* int8_t bmm350SetOdrPerformance(enum eBmm350DataRates_t odr,
 *                                   enum bmm350_performance_parameters avg,
 *                                   struct bmm350_dev *dev);
 *
@@ -232,7 +232,7 @@ int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
 * If ODR and performance is a combination which is not allowed, then
 * the combination setting is corrected to the next lower possible setting
 *
-* @param[in]  odr         :  enum bmm350_data_rates
+* @param[in]  odr         :  enum eBmm350DataRates_t
 *
 *@verbatim
       Data rate (ODR)     |        odr
@@ -265,7 +265,7 @@ int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
+int8_t bmm350SetOdrPerformance(enum eBmm350DataRates_t odr,
                                   enum bmm350_performance_parameters avg,
                                   struct bmm350_dev *dev);
 
@@ -273,7 +273,7 @@ int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
 * \ingroup bmm350ApiSetGet
 * \page bmm350_api_bmm350_enable_axes bmm350_enable_axes
 * \code
-* int8_t bmm350_enable_axes(enum bmm350_x_axis_en_dis en_x, enum bmm350_y_axis_en_dis en_y, enum bmm350_z_axis_en_dis en_z, struct bmm350_dev *dev);
+* int8_t bmm350_enable_axes(enum eBmm350XAxisEnDis_t en_x, enum eBmm350YAxisEnDis_t en_y, enum eBmm350ZAxisEnDis_t en_z, struct bmm350_dev *dev);
 * \endcode
 * @details This API is used to enable or disable the magnetic
 * measurement of x,y,z axes
@@ -294,9 +294,9 @@ int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_enable_axes(enum bmm350_x_axis_en_dis en_x,
-                          enum bmm350_y_axis_en_dis en_y,
-                          enum bmm350_z_axis_en_dis en_z,
+int8_t bmm350_enable_axes(enum eBmm350XAxisEnDis_t en_x,
+                          enum eBmm350YAxisEnDis_t en_y,
+                          enum eBmm350ZAxisEnDis_t en_z,
                           struct bmm350_dev *dev);
 
 /**
@@ -335,7 +335,7 @@ int8_t bmm350_read_sensortime(uint32_t *seconds, uint32_t *nanoseconds, struct b
 * \ingroup bmm350ApiInterrupt
 * \page bmm350_api_bmm350_enable_interrupt bmm350_enable_interrupt
 * \code
-* int8_t bmm350_enable_interrupt(enum bmm350_interrupt_enable_disable enable_disable, struct bmm350_dev *dev);
+* int8_t bmm350_enable_interrupt(enum eBmm350InterruptEnableDisable_t enable_disable, struct bmm350_dev *dev);
 * \endcode
 * @details This API is used to enable or disable the data ready interrupt
 *
@@ -346,14 +346,14 @@ int8_t bmm350_read_sensortime(uint32_t *seconds, uint32_t *nanoseconds, struct b
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_enable_interrupt(enum bmm350_interrupt_enable_disable enable_disable, struct bmm350_dev *dev);
+int8_t bmm350_enable_interrupt(enum eBmm350InterruptEnableDisable_t enable_disable, struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiInterrupt
 * \page bmm350_api_bmm350_configure_interrupt bmm350_configure_interrupt
 * \code
 * int8_t  bmm350_configure_interrupt(enum bmm350_intr_latch latching,
-*                                   enum bmm350_intr_polarity polarity,
+*                                   enum eBmm350IntrPolarity_t polarity,
 *                                   enum bmm350_intr_drive drivertype,
 *                                   enum bmm350_intr_map map_nomap,
 *                                   struct bmm350_dev *dev);
@@ -371,7 +371,7 @@ int8_t bmm350_enable_interrupt(enum bmm350_interrupt_enable_disable enable_disab
 *  @retval < 0 -> Error
 */
 int8_t  bmm350_configure_interrupt(enum bmm350_intr_latch latching,
-                                   enum bmm350_intr_polarity polarity,
+                                   enum eBmm350IntrPolarity_t polarity,
                                    enum bmm350_intr_drive drivertype,
                                    enum bmm350_intr_map map_nomap,
                                    struct bmm350_dev *dev);
@@ -464,20 +464,20 @@ int8_t bmm350_magnetic_reset_and_wait(struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiMagComp
-* \page bmm350_api_bmm350_get_compensated_mag_xyz_temp_data bmm350_get_compensated_mag_xyz_temp_data
+* \page bmm350_api_bmm350GetCompensatedMagXYZTempData bmm350GetCompensatedMagXYZTempData
 * \code
-* int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag_temp_data, struct bmm350_dev *dev);
+* int8_t bmm350GetCompensatedMagXYZTempData(struct sBmm350MagTempData_t *mag_temp_data, struct bmm350_dev *dev);
 * \endcode
 * @details This API is used to perform compensation for raw magnetometer and temperature data.
 *
-* @param[out] mag_temp_data    : Structure instance of bmm350_mag_temp_data.
+* @param[out] mag_temp_data    : Structure instance of sBmm350MagTempData_t.
 * @param[in] dev               : Structure instance of bmm350_dev.
 *
 * @return Result of API execution status
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag_temp_data, struct bmm350_dev *dev);
+int8_t bmm350GetCompensatedMagXYZTempData(struct sBmm350MagTempData_t *mag_temp_data, struct bmm350_dev *dev);
 
 /**
  * \ingroup bmm350
@@ -487,20 +487,20 @@ int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag
 
 /*!
 * \ingroup bmm350ApiSelftest
-* \page bmm350_api_bmm350_perform_self_test bmm350_perform_self_test
+* \page bmm350_api_bmm350PerformSelfTest bmm350PerformSelfTest
 * \code
-* int8_t bmm350_perform_self_test(struct bmm350_self_test *out_data, struct bmm350_dev *dev);
+* int8_t bmm350PerformSelfTest(struct sBmm350SelfTest_t *out_data, struct bmm350_dev *dev);
 * \endcode
 * @details This API executes FGR and BR sequences to initialize TMR sensor and performs self-test for x and y axis.
 *
-* @param[in, out] out_data    : Structure instance of bmm350_self_test.
+* @param[in, out] out_data    : Structure instance of sBmm350SelfTest_t.
 * @param[in] dev              : Structure instance of bmm350_dev.
 *
 * @return Result of API execution status
 *  @retval = 0 -> Success
 *  @retval < 0 -> Error
 */
-int8_t bmm350_perform_self_test(struct bmm350_self_test *out_data, struct bmm350_dev *dev);
+int8_t bmm350PerformSelfTest(struct sBmm350SelfTest_t *out_data, struct bmm350_dev *dev);
 
 /*!
 * \ingroup bmm350ApiSetGet

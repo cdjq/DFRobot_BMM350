@@ -45,10 +45,10 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @fn setOperationMode
    * @brief 设置传感器的执行模式
    * @param opMode mode
-   * @n BMM350_SUSPEND_MODE       挂起模式:挂起模式是芯片上电后BMM350的默认电源模式，在挂起模式下电流消耗最小，因此该模式适用于不需要数据转换的时期（所有寄存器的读写都是可能的）
-   * @n BMM350_NORMAL_MODE        常规模式: 获取地磁数据      
-   * @n BMM350_FORCED_MODE        强制模式: 单次测量，测量完成后传感器恢复到暂停模式
-   * @n BMM350_FORCED_MODE_FAST   只有使用FM_FAST时，ODR才能达到200Hz
+   * @n eBmm350SuspendMode       挂起模式:挂起模式是芯片上电后BMM350的默认电源模式，在挂起模式下电流消耗最小，因此该模式适用于不需要数据转换的时期（所有寄存器的读写都是可能的）
+   * @n eBmm350NormalMode        常规模式: 获取地磁数据      
+   * @n eBmm350ForcedMode        强制模式: 单次测量，测量完成后传感器恢复到暂停模式
+   * @n eBmm350ForcedModeFast   只有使用FM_FAST时，ODR才能达到200Hz
    */
   void setOperationMode(uint8_t opMode);
 
@@ -97,10 +97,10 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @fn selfTest
    * @brief 传感器自测,返回值表明自检结果
    * @param testMode:
-   * @n     eBMM350_SELF_TEST_NORMAL               常规自检，检查x轴、y轴、z轴是否接通或短路
+   * @n     eBmm350SelfTestNormal               常规自检，检查x轴、y轴、z轴是否接通或短路
    * @return result 返回的字符串为自测的结果
    */
-  String selfTest(eBMM350_SELFTEST testMode = eBMM350_SELF_TEST_NORMAL);
+  String selfTest(eBmm350SelfTest_t testMode = eBmm350SelfTestNormal);
   
   /**
    * @fn setMeasurementXYZ
@@ -115,7 +115,7 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @n   BMM350_Z_EN        使能 z 轴的测量
    * @n   BMM350_Z_DIS       禁止 z 轴的测量
    */
-  void setMeasurementXYZ(enum bmm350_x_axis_en_dis en_x = BMM350_X_EN, enum bmm350_y_axis_en_dis en_y = BMM350_Y_EN, enum bmm350_z_axis_en_dis en_z = BMM350_Z_EN);
+  void setMeasurementXYZ(enum eBmm350XAxisEnDis_t enX = BMM350_X_EN, enum eBmm350YAxisEnDis_t enY = BMM350_Y_EN, enum eBmm350ZAxisEnDis_t enZ = BMM350_Z_EN);
 
   /**
    * @fn getMeasurementStateXYZ
@@ -178,7 +178,7 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @n     POLARITY_HIGH      高极性
    * @n     POLARITY_LOW       低极性
    */
-  void setThresholdInterrupt(uint8_t modes, int8_t threshold, enum bmm350_intr_polarity polarity);
+  void setThresholdInterrupt(uint8_t modes, int8_t threshold, enum eBmm350IntrPolarity_t polarity);
 
   /**
    * @fn getThresholdData

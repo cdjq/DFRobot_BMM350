@@ -45,13 +45,13 @@ Download the zip file first to use this library and uncompress it to a folder na
    * @fn setOperationMode
    * @brief Set sensor operation mode
    * @param powermode
-   * @n BMM350_SUSPEND_MODE      suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
+   * @n eBmm350SuspendMode      suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
    *                                           so, this mode is useful for periods when data conversion is not needed. Read and write of all registers is possible.
-   * @n BMM350_NORMAL_MODE       normal mode: Get geomagnetic data normally.      
-   * @n BMM350_FORCED_MODE       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
-   * @n BMM350_FORCED_MODE_FAST  To reach ODR = 200Hz is only possible by using FM_ FAST.
+   * @n eBmm350NormalMode       normal mode: Get geomagnetic data normally.      
+   * @n eBmm350ForcedMode       forced mode: Single measurement, the sensor restores to suspend mode when the measurement is done.
+   * @n eBmm350ForcedModeFast  To reach ODR = 200Hz is only possible by using FM_ FAST.
    */
-  void setOperationMode(enum bmm350_power_modes powermode);
+  void setOperationMode(enum eBmm350PowerModes_t powermode);
 
 
   /**
@@ -99,10 +99,10 @@ Download the zip file first to use this library and uncompress it to a folder na
    * @fn selfTest
    * @brief The sensor self test, the returned value indicate the self test result.
    * @param testMode:
-   * @n     eBMM350_SELF_TEST_NORMAL               Normal self test, test whether x-axis, y-axis and z-axis are connected or short-circuited
+   * @n     eBmm350SelfTestNormal               Normal self test, test whether x-axis, y-axis and z-axis are connected or short-circuited
    * @return result The returned character string is the self test result
    */
-  String selfTest(eBMM350_SELFTEST testMode = eBMM350_SELF_TEST_NORMAL);
+  String selfTest(eBmm350SelfTest_t testMode = eBmm350SelfTestNormal);
   
   /**
    * @fn setMeasurementXYZ
@@ -117,7 +117,7 @@ Download the zip file first to use this library and uncompress it to a folder na
    * @n   BMM350_Z_EN        Enable the measurement at z-axis
    * @n   BMM350_Z_DIS       Disable the measurement at z-axis
    */
-  void setMeasurementXYZ(enum bmm350_x_axis_en_dis en_x = BMM350_X_EN, enum bmm350_y_axis_en_dis en_y = BMM350_Y_EN, enum bmm350_z_axis_en_dis en_z = BMM350_Z_EN);
+  void setMeasurementXYZ(enum eBmm350XAxisEnDis_t enX = BMM350_X_EN, enum eBmm350YAxisEnDis_t enY = BMM350_Y_EN, enum eBmm350ZAxisEnDis_t enZ = BMM350_Z_EN);
 
   /**
    * @fn getMeasurementStateXYZ
@@ -155,7 +155,7 @@ Download the zip file first to use this library and uncompress it to a folder na
    * @n     BMM350_ACTIVE_HIGH              High polarity
    * @n     BMM350_ACTIVE_LOW               Low polarity
    */
-  void setDataReadyPin(enum bmm350_interrupt_enable_disable modes, enum bmm350_intr_polarity polarity=BMM350_ACTIVE_HIGH);
+  void setDataReadyPin(enum eBmm350InterruptEnableDisable_t modes, enum eBmm350IntrPolarity_t polarity=BMM350_ACTIVE_HIGH);
 
   /**
    * @fn getDataReadyState
@@ -180,7 +180,7 @@ Download the zip file first to use this library and uncompress it to a folder na
    * @n     POLARITY_HIGH      High polarity
    * @n     POLARITY_LOW       Low polarity
    */
-  void setThresholdInterrupt(uint8_t modes, int8_t threshold, enum bmm350_intr_polarity polarity);
+  void setThresholdInterrupt(uint8_t modes, int8_t threshold, enum eBmm350IntrPolarity_t polarity);
 
   /**
    * @fn getThresholdData

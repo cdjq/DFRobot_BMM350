@@ -75,13 +75,13 @@ static int8_t trigger_half_selftest(struct bmm350_oor_params *oor, struct bmm350
                 break;
         }
 
-        rslt = bmm350_set_regs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
     }
     else
     {
         if (oor->last_st_cmd != BMM350_SELF_TEST_DISABLE)
         {
-            rslt = bmm350_set_regs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
             oor->st_counter = 0;
         }
     }
@@ -92,7 +92,7 @@ static int8_t trigger_half_selftest(struct bmm350_oor_params *oor, struct bmm350
 /*!
  * @brief This internal API is used to validate half self-test
  */
-static void validate_half_selftest(const struct bmm350_mag_temp_data *data, struct bmm350_oor_params *oor)
+static void validate_half_selftest(const struct sBmm350MagTempData_t *data, struct bmm350_oor_params *oor)
 {
     switch (oor->last_st_cmd)
     {
@@ -152,13 +152,13 @@ static int8_t trigger_full_selftest(struct bmm350_oor_params *oor, struct bmm350
                 break;
         }
 
-        rslt = bmm350_set_regs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
     }
     else
     {
         if (oor->last_st_cmd != BMM350_SELF_TEST_DISABLE)
         {
-            rslt = bmm350_set_regs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_TMR_SELFTEST_USER, &(oor->st_cmd), 1, dev);
             oor->st_counter = 0;
         }
     }
@@ -169,7 +169,7 @@ static int8_t trigger_full_selftest(struct bmm350_oor_params *oor, struct bmm350
 /*!
  * @brief This internal API is used to validate full self-test
  */
-static void validate_full_selftest(const struct bmm350_mag_temp_data *data, struct bmm350_oor_params *oor)
+static void validate_full_selftest(const struct sBmm350MagTempData_t *data, struct bmm350_oor_params *oor)
 {
     switch (oor->last_st_cmd)
     {
@@ -201,7 +201,7 @@ static void validate_full_selftest(const struct bmm350_mag_temp_data *data, stru
  * @brief This internal API is used to validate out of range.
  */
 static void validate_out_of_range(bool *out_of_range,
-                                  const struct bmm350_mag_temp_data *data,
+                                  const struct sBmm350MagTempData_t *data,
                                   struct bmm350_oor_params *oor)
 {
     float field_str = 0.0f;
@@ -267,12 +267,12 @@ int8_t bmm350_oor_perform_reset_sequence_forced(struct bmm350_oor_params *oor, s
     {
         case 1: /* Trigger the Bit reset fast */
             pmu_cmd = BMM350_PMU_CMD_BR_FAST;
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
             break;
 
         case 2: /* Trigger Flux Guide reset */
             pmu_cmd = BMM350_PMU_CMD_FGR;
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
             break;
 
         case 3: /* Flux Guide dummy */
@@ -291,7 +291,7 @@ int8_t bmm350_oor_perform_reset_sequence_forced(struct bmm350_oor_params *oor, s
  * @brief This API is used to read out of range in half or full self-test.
  */
 int8_t bmm350_oor_read(bool *out_of_range,
-                       struct bmm350_mag_temp_data *data,
+                       struct sBmm350MagTempData_t *data,
                        struct bmm350_oor_params *oor,
                        struct bmm350_dev *dev)
 {
@@ -307,11 +307,11 @@ int8_t bmm350_oor_read(bool *out_of_range,
     if (rslt == BMM350_OK)
     {
         pmu_cmd = BMM350_PMU_CMD_FM_FAST;
-        rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
 
         if (rslt == BMM350_OK)
         {
-            rslt = bmm350_get_compensated_mag_xyz_temp_data(data, dev);
+            rslt = bmm350GetCompensatedMagXYZTempData(data, dev);
         }
     }
 

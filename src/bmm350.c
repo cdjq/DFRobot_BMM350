@@ -140,21 +140,21 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev);
 /*!
  * @brief This internal API is used to test self-test for X and Y axis
  *
- * @param[in, out] out_data  : Structure instance of bmm350_self_test.
+ * @param[in, out] out_data  : Structure instance of sBmm350SelfTest_t.
  * @param[in, out] dev       : Structure instance of bmm350_dev.
  *
  * @return Result of API execution status
  * @retval = 0 -> Success
  * @retval < 0 -> Error
  */
-static int8_t self_test_xy_axis(struct bmm350_self_test *out_data, struct bmm350_dev *dev);
+static int8_t self_test_xy_axis(struct sBmm350SelfTest_t *out_data, struct bmm350_dev *dev);
 
 /*!
  * @brief This internal API is used to set self-test configurations.
  *
  * @param[in] st_cmd         : Variable to store self-test command.
  * @param[in] pmu_cmd        : Variable to store PMU command.
- * @param[in, out] out_data  : Structure instance of bmm350_self_test.
+ * @param[in, out] out_data  : Structure instance of sBmm350SelfTest_t.
  * @param[in, out] dev       : Structure instance of bmm350_dev.
  *
  * @return Result of API execution status
@@ -163,7 +163,7 @@ static int8_t self_test_xy_axis(struct bmm350_self_test *out_data, struct bmm350
  */
 static int8_t self_test_config(uint8_t st_cmd,
                                uint8_t pmu_cmd,
-                               struct bmm350_self_test *out_data,
+                               struct sBmm350SelfTest_t *out_data,
                                struct bmm350_dev *dev);
 
 /*!
@@ -176,20 +176,20 @@ static int8_t self_test_config(uint8_t st_cmd,
  * @retval = 0 -> Success
  * @retval < 0 -> Error
  */
-static int8_t set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev *dev);
+static int8_t set_powermode(enum eBmm350PowerModes_t powermode, struct bmm350_dev *dev);
 
 /********************** Global function definitions ************************/
 
 /*!
  * @brief This API is the entry point. Call this API before using other APIs.
  */
-int8_t bmm350_init(struct bmm350_dev *dev)
+int8_t bmm350Init(struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
 
     /* Variable to get chip id */
-    uint8_t chip_id = BMM350_DISABLE;
+    uint8_t chipId = BMM350_DISABLE;
 
     /* Variable to store the command to power-off the OTP */
     uint8_t otp_cmd = BMM350_OTP_CMD_PWR_OFF_OTP;
@@ -202,45 +202,45 @@ int8_t bmm350_init(struct bmm350_dev *dev)
     /* Proceed if null check is fine */
     if (rslt == BMM350_OK)
     {
-        dev->chip_id = 0;
+        dev->chipId = 0;
 
-        /* Assign axis_en with all axis enabled (BMM350_EN_XYZ_MSK) */
-        dev->axis_en = BMM350_EN_XYZ_MSK;
-        rslt = bmm350_delay_us(BMM350_START_UP_TIME_FROM_POR, dev);
+        /* Assign axisEn with all axis enabled (BMM350_EN_XYZ_MSK) */
+        dev->axisEn = BMM350_EN_XYZ_MSK;
+        rslt = bmm350DelayUs(BMM350_START_UP_TIME_FROM_POR, dev);
 
         if (rslt == BMM350_OK)
         {
             /* Soft-reset */
             soft_reset = BMM350_CMD_SOFTRESET;
             /* Set the command in the command register */
-            rslt = bmm350_set_regs(BMM350_REG_CMD, &soft_reset, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_CMD, &soft_reset, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                rslt = bmm350_delay_us(BMM350_SOFT_RESET_DELAY, dev);
+                rslt = bmm350DelayUs(BMM350_SOFT_RESET_DELAY, dev);
             }
         }
 
         if (rslt == BMM350_OK)
         {   
             /* Chip ID of the sensor is read */
-            rslt = bmm350_get_regs(BMM350_REG_CHIP_ID, &chip_id, 1, dev);
+            rslt = bmm350GetRegs(BMM350_REG_CHIP_ID, &chipId, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                /* Assign chip_id to dev->chip_id */
-                dev->chip_id = chip_id;
+                /* Assign chipId to dev->chipId */
+                dev->chipId = chipId;
             }
         }
         /* Check for chip id validity */
-        if ((rslt == BMM350_OK) && (dev->chip_id == BMM350_CHIP_ID))
+        if ((rslt == BMM350_OK) && (dev->chipId == BMM350_CHIP_ID))
         {
             /* Download OTP memory */
             rslt = otp_dump_after_boot(dev);
             if (rslt == BMM350_OK)
             {
                 /* Power off OTP */
-                rslt = bmm350_set_regs(BMM350_REG_OTP_CMD_REG, &otp_cmd, 1, dev);
+                rslt = bmm350SetRegs(BMM350_REG_OTP_CMD_REG, &otp_cmd, 1, dev);
 
                 if (rslt == BMM350_OK)
                 {
@@ -261,7 +261,7 @@ int8_t bmm350_init(struct bmm350_dev *dev)
  * @brief This API writes the given data to the register address
  * of the sensor.
  */
-int8_t bmm350_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev)
+int8_t bmm350SetRegs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -273,7 +273,7 @@ int8_t bmm350_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, 
     if ((rslt == BMM350_OK) && (reg_data != NULL) && (len != 0))
     {
         /* Write the data to the reg_addr */
-        dev->intf_rslt = dev->write(reg_addr, reg_data, len, dev->intf_ptr);
+        dev->intf_rslt = dev->write(reg_addr, reg_data, len, dev->intfPtr);
 
         if (dev->intf_rslt != BMM350_INTF_RET_SUCCESS)
         {
@@ -291,7 +291,7 @@ int8_t bmm350_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint16_t len, 
 /*!
  * @brief This API reads the data from the given register address of sensor.
  */
-int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev)
+int8_t bmm350GetRegs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -312,7 +312,7 @@ int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct
     if ((rslt == BMM350_OK) && (reg_data != NULL))
     {
         /* Read the data from the reg_addr */
-        dev->intf_rslt = dev->read(reg_addr, temp_buf, temp_len, dev->intf_ptr);
+        dev->intf_rslt = dev->read(reg_addr, temp_buf, temp_len, dev->intfPtr);
 
         if (dev->intf_rslt == BMM350_INTF_RET_SUCCESS)
         {
@@ -340,7 +340,7 @@ int8_t bmm350_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, struct
  * @brief This function provides the delay for required time (Microsecond) as per the input provided in some of the
  * APIs.
  */
-int8_t bmm350_delay_us(uint32_t period_us, const struct bmm350_dev *dev)
+int8_t bmm350DelayUs(uint32_t period_us, const struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -350,7 +350,7 @@ int8_t bmm350_delay_us(uint32_t period_us, const struct bmm350_dev *dev)
 
     if (rslt == BMM350_OK)
     {
-        dev->delay_us(period_us, dev->intf_ptr);
+        dev->delayUs(period_us, dev->intfPtr);
     }
 
     return rslt;
@@ -360,7 +360,7 @@ int8_t bmm350_delay_us(uint32_t period_us, const struct bmm350_dev *dev)
  * @brief This API is used to perform soft-reset of the sensor
  * where all the registers are reset to their default values
  */
-int8_t bmm350_soft_reset(struct bmm350_dev *dev)
+int8_t bmm350SoftReset(struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -378,16 +378,16 @@ int8_t bmm350_soft_reset(struct bmm350_dev *dev)
         reg_data = BMM350_CMD_SOFTRESET;
 
         /* Set the command in the command register */
-        rslt = bmm350_set_regs(BMM350_REG_CMD, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_CMD, &reg_data, 1, dev);
 
         if (rslt == BMM350_OK)
         {
-            rslt = bmm350_delay_us(BMM350_SOFT_RESET_DELAY, dev);
+            rslt = bmm350DelayUs(BMM350_SOFT_RESET_DELAY, dev);
 
             if (rslt == BMM350_OK)
             {
                 /* Power off OTP */
-                rslt = bmm350_set_regs(BMM350_REG_OTP_CMD_REG, &otp_cmd, 1, dev);
+                rslt = bmm350SetRegs(BMM350_REG_OTP_CMD_REG, &otp_cmd, 1, dev);
 
                 if (rslt == BMM350_OK)
                 {
@@ -416,7 +416,7 @@ int8_t bmm350_read_sensortime(uint32_t *seconds, uint32_t *nanoseconds, struct b
     if ((seconds != NULL) && (nanoseconds != NULL))
     {
         /* Get sensor time raw data */
-        rslt = bmm350_get_regs(BMM350_REG_SENSORTIME_XLSB, reg_data, 3, dev);
+        rslt = bmm350GetRegs(BMM350_REG_SENSORTIME_XLSB, reg_data, 3, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -441,7 +441,7 @@ int8_t bmm350_read_sensortime(uint32_t *seconds, uint32_t *nanoseconds, struct b
  * @brief This API is used to get the status flags of all interrupt
  * which is used to check for the assertion of interrupts
  */
-int8_t bmm350_get_interrupt_status(uint8_t *drdy_status, struct bmm350_dev *dev)
+int8_t bmm350GetInterruptStatus(uint8_t *drdy_status, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -451,7 +451,7 @@ int8_t bmm350_get_interrupt_status(uint8_t *drdy_status, struct bmm350_dev *dev)
     if (drdy_status != NULL)
     {
         /* Get the status of interrupt */
-        rslt = bmm350_get_regs(BMM350_REG_INT_STATUS, &int_status_reg, 1, dev);
+        rslt = bmm350GetRegs(BMM350_REG_INT_STATUS, &int_status_reg, 1, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -470,7 +470,7 @@ int8_t bmm350_get_interrupt_status(uint8_t *drdy_status, struct bmm350_dev *dev)
 /*!
  * @brief This API is used to set the power mode of the sensor
  */
-int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev *dev)
+int8_t bmm350SetPowerMode(enum eBmm350PowerModes_t powermode, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -483,7 +483,7 @@ int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
 
     if (rslt == BMM350_OK)
     {
-        rslt = bmm350_get_regs(BMM350_REG_PMU_CMD, &last_pwr_mode, 1, dev);
+        rslt = bmm350GetRegs(BMM350_REG_PMU_CMD, &last_pwr_mode, 1, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -498,11 +498,11 @@ int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
                 reg_data = BMM350_PMU_CMD_SUS;
 
                 /* Set PMU command configuration */
-                rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &reg_data, 1, dev);
+                rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &reg_data, 1, dev);
 
                 if (rslt == BMM350_OK)
                 {
-                    rslt = bmm350_delay_us(BMM350_GOTO_SUSPEND_DELAY, dev);
+                    rslt = bmm350DelayUs(BMM350_GOTO_SUSPEND_DELAY, dev);
                 }
             }
 
@@ -512,14 +512,14 @@ int8_t bmm350_set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
             }
         }
     }
-    if (rslt == BMM350_OK)  dev->power_mode = powermode;
+    if (rslt == BMM350_OK)  dev->powerMode = powermode;
     return rslt;
 }
 
 /*!
  * @brief This API sets the ODR and averaging factor.
  */
-int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
+int8_t bmm350SetOdrPerformance(enum eBmm350DataRates_t odr,
                                   enum bmm350_performance_parameters performance,
                                   struct bmm350_dev *dev)
 {
@@ -557,7 +557,7 @@ int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
         reg_data = BMM350_SET_BITS(reg_data, BMM350_AVG, (uint8_t)performance_fix);
 
         /* Set PMU command configurations for ODR and performance */
-        rslt = bmm350_set_regs(BMM350_REG_PMU_CMD_AGGR_SET, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PMU_CMD_AGGR_SET, &reg_data, 1, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -565,11 +565,11 @@ int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
             reg_data = BMM350_PMU_CMD_UPD_OAE;
 
             /* Set PMU command configuration */
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &reg_data, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &reg_data, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                rslt = bmm350_delay_us(BMM350_UPD_OAE_DELAY, dev);
+                rslt = bmm350DelayUs(BMM350_UPD_OAE_DELAY, dev);
             }
         }
     }
@@ -581,9 +581,9 @@ int8_t bmm350_set_odr_performance(enum bmm350_data_rates odr,
  * @brief This API is used to enable or disable the magnetic
  * measurement of x,y,z axes
  */
-int8_t bmm350_enable_axes(enum bmm350_x_axis_en_dis en_x,
-                          enum bmm350_y_axis_en_dis en_y,
-                          enum bmm350_z_axis_en_dis en_z,
+int8_t bmm350_enable_axes(enum eBmm350XAxisEnDis_t en_x,
+                          enum eBmm350YAxisEnDis_t en_y,
+                          enum eBmm350ZAxisEnDis_t en_z,
                           struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
@@ -601,8 +601,8 @@ int8_t bmm350_enable_axes(enum bmm350_x_axis_en_dis en_x,
         {
             rslt = BMM350_E_ALL_AXIS_DISABLED;
 
-            /* Assign axis_en with all axis disabled status */
-            dev->axis_en = BMM350_DISABLE;
+            /* Assign axisEn with all axis disabled status */
+            dev->axisEn = BMM350_DISABLE;
         }
         else
         {
@@ -610,12 +610,12 @@ int8_t bmm350_enable_axes(enum bmm350_x_axis_en_dis en_x,
             data = BMM350_SET_BITS(data, BMM350_EN_Y, en_y);
             data = BMM350_SET_BITS(data, BMM350_EN_Z, en_z);
 
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD_AXIS_EN, &data, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD_AXIS_EN, &data, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                /* Assign axis_en with the axis selection done */
-                dev->axis_en = data;
+                /* Assign axisEn with the axis selection done */
+                dev->axisEn = data;
             }
         }
     }
@@ -626,7 +626,7 @@ int8_t bmm350_enable_axes(enum bmm350_x_axis_en_dis en_x,
 /*!
  * @brief This API is used to enable or disable the data ready interrupt
  */
-int8_t bmm350_enable_interrupt(enum bmm350_interrupt_enable_disable enable_disable, struct bmm350_dev *dev)
+int8_t bmm350_enable_interrupt(enum eBmm350InterruptEnableDisable_t enable_disable, struct bmm350_dev *dev)
 {
     /* Variable to get interrupt control configuration */
     uint8_t reg_data = 0;
@@ -635,14 +635,14 @@ int8_t bmm350_enable_interrupt(enum bmm350_interrupt_enable_disable enable_disab
     int8_t rslt;
 
     /* Get interrupt control configuration */
-    rslt = bmm350_get_regs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
+    rslt = bmm350GetRegs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
 
     if (rslt == BMM350_OK)
     {
         reg_data = BMM350_SET_BITS(reg_data, BMM350_DRDY_DATA_REG_EN, (uint8_t)enable_disable);
 
         /* Finally transfer the interrupt configurations */
-        rslt = bmm350_set_regs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
     }
 
     return rslt;
@@ -652,7 +652,7 @@ int8_t bmm350_enable_interrupt(enum bmm350_interrupt_enable_disable enable_disab
  * @brief This API is used to configure the interrupt control settings
  */
 int8_t bmm350_configure_interrupt(enum bmm350_intr_latch latching,
-                                  enum bmm350_intr_polarity polarity,
+                                  enum eBmm350IntrPolarity_t polarity,
                                   enum bmm350_intr_drive drivertype,
                                   enum bmm350_intr_map map_nomap,
                                   struct bmm350_dev *dev)
@@ -664,7 +664,7 @@ int8_t bmm350_configure_interrupt(enum bmm350_intr_latch latching,
     int8_t rslt;
 
     /* Get interrupt control configuration */
-    rslt = bmm350_get_regs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
+    rslt = bmm350GetRegs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
 
     if (rslt == BMM350_OK)
     {
@@ -674,7 +674,7 @@ int8_t bmm350_configure_interrupt(enum bmm350_intr_latch latching,
         reg_data = BMM350_SET_BITS(reg_data, BMM350_INT_OUTPUT_EN, map_nomap);
 
         /* Finally transfer the interrupt configurations */
-        rslt = bmm350_set_regs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_INT_CTRL, &reg_data, 1, dev);
     }
 
     return rslt;
@@ -695,7 +695,7 @@ int8_t bmm350_read_uncomp_mag_temp_data(struct bmm350_raw_mag_data *raw_data, st
     if (raw_data != NULL)
     {
         /* Get uncompensated mag data */
-        rslt = bmm350_get_regs(BMM350_REG_MAG_X_XLSB, mag_data, BMM350_MAG_TEMP_DATA_LEN, dev);
+        rslt = bmm350GetRegs(BMM350_REG_MAG_X_XLSB, mag_data, BMM350_MAG_TEMP_DATA_LEN, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -704,7 +704,7 @@ int8_t bmm350_read_uncomp_mag_temp_data(struct bmm350_raw_mag_data *raw_data, st
             raw_mag_z = mag_data[6] + ((uint32_t)mag_data[7] << 8) + ((uint32_t)mag_data[8] << 16);
             raw_temp = mag_data[9] + ((uint32_t)mag_data[10] << 8) + ((uint32_t)mag_data[11] << 16);
 
-            if ((dev->axis_en & BMM350_EN_X_MSK) == BMM350_DISABLE)
+            if ((dev->axisEn & BMM350_EN_X_MSK) == BMM350_DISABLE)
             {
                 raw_data->raw_xdata = BMM350_DISABLE;
             }
@@ -713,7 +713,7 @@ int8_t bmm350_read_uncomp_mag_temp_data(struct bmm350_raw_mag_data *raw_data, st
                 raw_data->raw_xdata = fix_sign(raw_mag_x, BMM350_SIGNED_24_BIT);
             }
 
-            if ((dev->axis_en & BMM350_EN_Y_MSK) == BMM350_DISABLE)
+            if ((dev->axisEn & BMM350_EN_Y_MSK) == BMM350_DISABLE)
             {
                 raw_data->raw_ydata = BMM350_DISABLE;
             }
@@ -722,7 +722,7 @@ int8_t bmm350_read_uncomp_mag_temp_data(struct bmm350_raw_mag_data *raw_data, st
                 raw_data->raw_ydata = fix_sign(raw_mag_y, BMM350_SIGNED_24_BIT);
             }
 
-            if ((dev->axis_en & BMM350_EN_Z_MSK) == BMM350_DISABLE)
+            if ((dev->axisEn & BMM350_EN_Z_MSK) == BMM350_DISABLE)
             {
                 raw_data->raw_zdata = BMM350_DISABLE;
             }
@@ -756,7 +756,7 @@ int8_t bmm350_set_int_ctrl_ibi(enum bmm350_drdy_int_map_to_ibi en_dis,
     uint8_t reg_data = 0;
 
     /* Get interrupt control configuration */
-    rslt = bmm350_get_regs(BMM350_REG_INT_CTRL_IBI, &reg_data, 1, dev);
+    rslt = bmm350GetRegs(BMM350_REG_INT_CTRL_IBI, &reg_data, 1, dev);
 
     if (rslt == BMM350_OK)
     {
@@ -764,7 +764,7 @@ int8_t bmm350_set_int_ctrl_ibi(enum bmm350_drdy_int_map_to_ibi en_dis,
         reg_data = BMM350_SET_BITS(reg_data, BMM350_CLEAR_DRDY_INT_STATUS_UPON_IBI, clear_on_ibi);
 
         /* Set the IBI control configuration */
-        rslt = bmm350_set_regs(BMM350_REG_INT_CTRL_IBI, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_INT_CTRL_IBI, &reg_data, 1, dev);
 
         if (en_dis == BMM350_IBI_ENABLE)
         {
@@ -791,7 +791,7 @@ int8_t bmm350_set_pad_drive(uint8_t drive, struct bmm350_dev *dev)
         reg_data = drive & BMM350_DRV_MSK;
 
         /* Set drive */
-        rslt = bmm350_set_regs(BMM350_REG_PAD_CTRL, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PAD_CTRL, &reg_data, 1, dev);
     }
 
     return rslt;
@@ -828,7 +828,7 @@ int8_t bmm350_magnetic_reset_and_wait(struct bmm350_dev *dev)
             restore_normal = BMM350_ENABLE;
 
             /* Reset can only be triggered in suspend */
-            rslt = bmm350_set_powermode(BMM350_SUSPEND_MODE, dev);
+            rslt = bmm350SetPowerMode(eBmm350SuspendMode, dev);
         }
 
         if (rslt == BMM350_OK)
@@ -836,11 +836,11 @@ int8_t bmm350_magnetic_reset_and_wait(struct bmm350_dev *dev)
             /* Set BR to PMU_CMD register */
             pmu_cmd = BMM350_PMU_CMD_BR;
 
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                rslt = bmm350_delay_us(BMM350_BR_DELAY, dev);
+                rslt = bmm350DelayUs(BMM350_BR_DELAY, dev);
             }
         }
 
@@ -860,11 +860,11 @@ int8_t bmm350_magnetic_reset_and_wait(struct bmm350_dev *dev)
             /* Set FGR to PMU_CMD register */
             pmu_cmd = BMM350_PMU_CMD_FGR;
 
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                rslt = bmm350_delay_us(BMM350_FGR_DELAY, dev);
+                rslt = bmm350DelayUs(BMM350_FGR_DELAY, dev);
             }
         }
 
@@ -881,7 +881,7 @@ int8_t bmm350_magnetic_reset_and_wait(struct bmm350_dev *dev)
 
         if ((rslt == BMM350_OK) && (restore_normal == BMM350_ENABLE))
         {
-            rslt = bmm350_set_powermode(BMM350_NORMAL_MODE, dev);
+            rslt = bmm350SetPowerMode(eBmm350NormalMode, dev);
         }
     }
 
@@ -891,7 +891,7 @@ int8_t bmm350_magnetic_reset_and_wait(struct bmm350_dev *dev)
 /*!
  * @brief This API is used to perform compensation for raw magnetometer and temperature data.
  */
-int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag_temp_data, struct bmm350_dev *dev)
+int8_t bmm350GetCompensatedMagXYZTempData(struct sBmm350MagTempData_t *mag_temp_data, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -958,7 +958,7 @@ int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag
 
         if (rslt == BMM350_OK)
         {
-            if ((dev->axis_en & BMM350_EN_X_MSK) == BMM350_DISABLE)
+            if ((dev->axisEn & BMM350_EN_X_MSK) == BMM350_DISABLE)
             {
                 mag_temp_data->x = BMM350_DISABLE;
             }
@@ -967,7 +967,7 @@ int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag
                 mag_temp_data->x = out_data[0];
             }
 
-            if ((dev->axis_en & BMM350_EN_Y_MSK) == BMM350_DISABLE)
+            if ((dev->axisEn & BMM350_EN_Y_MSK) == BMM350_DISABLE)
             {
                 mag_temp_data->y = BMM350_DISABLE;
             }
@@ -976,7 +976,7 @@ int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag
                 mag_temp_data->y = out_data[1];
             }
 
-            if ((dev->axis_en & BMM350_EN_Z_MSK) == BMM350_DISABLE)
+            if ((dev->axisEn & BMM350_EN_Z_MSK) == BMM350_DISABLE)
             {
                 mag_temp_data->z = BMM350_DISABLE;
             }
@@ -999,7 +999,7 @@ int8_t bmm350_get_compensated_mag_xyz_temp_data(struct bmm350_mag_temp_data *mag
 /*!
  * @brief This function executes FGR and BR sequences to initialize TMR sensor and performs the user self-test.
  */
-int8_t bmm350_perform_self_test(struct bmm350_self_test *out_data, struct bmm350_dev *dev)
+int8_t bmm350PerformSelfTest(struct sBmm350SelfTest_t *out_data, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -1009,7 +1009,7 @@ int8_t bmm350_perform_self_test(struct bmm350_self_test *out_data, struct bmm350
 
     if (out_data != NULL)
     {
-        rslt = bmm350_get_regs(BMM350_REG_PMU_CMD, &last_pwr_mode, 1, dev);
+        rslt = bmm350GetRegs(BMM350_REG_PMU_CMD, &last_pwr_mode, 1, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -1035,12 +1035,12 @@ int8_t bmm350_perform_self_test(struct bmm350_self_test *out_data, struct bmm350
 
             if (rslt == BMM350_OK)
             {
-                rslt = bmm350_delay_us(1000, dev);
+                rslt = bmm350DelayUs(1000, dev);
             }
 
             if (last_pwr_mode == BMM350_PMU_CMD_NM)
             {
-                rslt = bmm350_set_powermode(BMM350_NORMAL_MODE, dev);
+                rslt = bmm350SetPowerMode(eBmm350NormalMode, dev);
             }
         }
     }
@@ -1065,7 +1065,7 @@ int8_t bmm350_set_i2c_wdt(enum bmm350_i2c_wdt_en i2c_wdt_en_dis,
     uint8_t reg_data;
 
     /* Get I2C WDT configuration */
-    rslt = bmm350_get_regs(BMM350_REG_I2C_WDT_SET, &reg_data, 1, dev);
+    rslt = bmm350GetRegs(BMM350_REG_I2C_WDT_SET, &reg_data, 1, dev);
 
     if (rslt == BMM350_OK)
     {
@@ -1073,7 +1073,7 @@ int8_t bmm350_set_i2c_wdt(enum bmm350_i2c_wdt_en i2c_wdt_en_dis,
         reg_data = BMM350_SET_BITS(reg_data, BMM350_I2C_WDT_SEL, i2c_wdt_sel);
 
         /* Set I2C WDT configuration */
-        rslt = bmm350_set_regs(BMM350_REG_I2C_WDT_SET, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_I2C_WDT_SET, &reg_data, 1, dev);
     }
 
     return rslt;
@@ -1095,7 +1095,7 @@ int8_t bmm350_set_tmr_selftest_user(enum bmm350_st_igen_en st_igen_en_dis,
     uint8_t reg_data;
 
     /* Get TMR self-test user configuration */
-    rslt = bmm350_get_regs(BMM350_REG_TMR_SELFTEST_USER, &reg_data, 1, dev);
+    rslt = bmm350GetRegs(BMM350_REG_TMR_SELFTEST_USER, &reg_data, 1, dev);
 
     if (rslt == BMM350_OK)
     {
@@ -1106,7 +1106,7 @@ int8_t bmm350_set_tmr_selftest_user(enum bmm350_st_igen_en st_igen_en_dis,
         reg_data = BMM350_SET_BITS(reg_data, BMM350_IST_EN_Y, ist_y_en_dis);
 
         /* Set TMR self-test user configuration */
-        rslt = bmm350_set_regs(BMM350_REG_TMR_SELFTEST_USER, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_TMR_SELFTEST_USER, &reg_data, 1, dev);
     }
 
     return rslt;
@@ -1124,14 +1124,14 @@ int8_t bmm350_set_ctrl_user(enum bmm350_ctrl_user cfg_sens_tim_aon_en_dis, struc
     uint8_t reg_data;
 
     /* Get control user configuration */
-    rslt = bmm350_get_regs(BMM350_REG_CTRL_USER, &reg_data, 1, dev);
+    rslt = bmm350GetRegs(BMM350_REG_CTRL_USER, &reg_data, 1, dev);
 
     if (rslt == BMM350_OK)
     {
         reg_data = BMM350_SET_BITS_POS_0(reg_data, BMM350_CFG_SENS_TIM_AON, cfg_sens_tim_aon_en_dis);
 
         /* Set control user configuration */
-        rslt = bmm350_set_regs(BMM350_REG_CTRL_USER, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_CTRL_USER, &reg_data, 1, dev);
     }
 
     return rslt;
@@ -1150,7 +1150,7 @@ int8_t bmm350_get_pmu_cmd_status_0(struct bmm350_pmu_cmd_status_0 *pmu_cmd_stat_
     if (pmu_cmd_stat_0 != NULL)
     {
         /* Get PMU command status 0 data */
-        rslt = bmm350_get_regs(BMM350_REG_PMU_CMD_STATUS_0, &reg_data, 1, dev);
+        rslt = bmm350GetRegs(BMM350_REG_PMU_CMD_STATUS_0, &reg_data, 1, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -1187,7 +1187,7 @@ static int8_t null_ptr_check(const struct bmm350_dev *dev)
     /* Variable to store the function result */
     int8_t rslt;
 
-    if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->delay_us == NULL))
+    if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->delayUs == NULL))
     {
         /* Device structure pointer is not valid */
         rslt = BMM350_E_NULL_PTR;
@@ -1260,17 +1260,17 @@ static int8_t read_otp_word(uint8_t addr, uint16_t *lsb_msb, struct bmm350_dev *
     {
         /* Set OTP command at specified address */
         otp_cmd = BMM350_OTP_CMD_DIR_READ | (addr & BMM350_OTP_WORD_ADDR_MSK);
-        rslt = bmm350_set_regs(BMM350_REG_OTP_CMD_REG, &otp_cmd, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_OTP_CMD_REG, &otp_cmd, 1, dev);
         if (rslt == BMM350_OK)
         {
             do
             {
-                rslt = bmm350_delay_us(300, dev);
+                rslt = bmm350DelayUs(300, dev);
 
                 if (rslt == BMM350_OK)
                 {
                     /* Get OTP status */
-                    rslt = bmm350_get_regs(BMM350_REG_OTP_STATUS_REG, &otp_status, 1, dev);
+                    rslt = bmm350GetRegs(BMM350_REG_OTP_STATUS_REG, &otp_status, 1, dev);
 
                     otp_err = BMM350_OTP_STATUS_ERROR(otp_status);
                     if (otp_err != BMM350_OTP_STATUS_NO_ERROR)
@@ -1309,11 +1309,11 @@ static int8_t read_otp_word(uint8_t addr, uint16_t *lsb_msb, struct bmm350_dev *
         if (rslt == BMM350_OK)
         {
             /* Get OTP MSB data */
-            rslt = bmm350_get_regs(BMM350_REG_OTP_DATA_MSB_REG, &msb, 1, dev);
+            rslt = bmm350GetRegs(BMM350_REG_OTP_DATA_MSB_REG, &msb, 1, dev);
             if (rslt == BMM350_OK)
             {
                 /* Get OTP LSB data */
-                rslt = bmm350_get_regs(BMM350_REG_OTP_DATA_LSB_REG, &lsb, 1, dev);
+                rslt = bmm350GetRegs(BMM350_REG_OTP_DATA_LSB_REG, &lsb, 1, dev);
                 *lsb_msb = ((uint16_t)(msb << 8) | lsb) & 0xFFFF;
             }
         }
@@ -1509,17 +1509,17 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev)
     /* Set suspend mode */
     cmd = BMM350_PMU_CMD_SUS;
 
-    rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
+    rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
 
     if (rslt == BMM350_OK)
     {
-        rslt = bmm350_delay_us(30000, dev);
+        rslt = bmm350DelayUs(30000, dev);
     }
 
     /* Read DUT outputs in FORCED mode */
     if (rslt == BMM350_OK)
     {
-        rslt = bmm350_set_odr_performance(BMM350_DATA_RATE_100HZ, BMM350_AVERAGING_2, dev);
+        rslt = bmm350SetOdrPerformance(BMM350_DATA_RATE_100HZ, BMM350_AVERAGING_2, dev);
 
         if (rslt == BMM350_OK)
         {
@@ -1533,11 +1533,11 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev)
 
     if (rslt == BMM350_OK)
     {
-        rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
 
         if (rslt == BMM350_OK)
         {
-            rslt = bmm350_delay_us(30000, dev);
+            rslt = bmm350DelayUs(30000, dev);
         }
     }
 
@@ -1550,11 +1550,11 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev)
             /* Execute BR with full CRST recharge */
             cmd = BMM350_PMU_CMD_BR_FAST;
 
-            rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
+            rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
 
             if (rslt == BMM350_OK)
             {
-                rslt = bmm350_delay_us(4000, dev);
+                rslt = bmm350DelayUs(4000, dev);
             }
         }
     }
@@ -1568,11 +1568,11 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev)
     {
         cmd = BMM350_PMU_CMD_FM_FAST;
 
-        rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &cmd, 1, dev);
 
         if (rslt == BMM350_OK)
         {
-            rslt = bmm350_delay_us(16000, dev);
+            rslt = bmm350DelayUs(16000, dev);
         }
 
         if (rslt == BMM350_OK)
@@ -1581,7 +1581,7 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev)
 
             if ((rslt == BMM350_OK) && (pmu_cmd_stat_0.pmu_cmd_value == BMM350_PMU_CMD_STATUS_0_FM_FAST))
             {
-                rslt = bmm350_delay_us(10, dev);
+                rslt = bmm350DelayUs(10, dev);
             }
         }
     }
@@ -1592,7 +1592,7 @@ static int8_t self_test_entry_config(struct bmm350_dev *dev)
 /*!
  * @brief This internal API is used to test self-test for X and Y axis
  */
-static int8_t self_test_xy_axis(struct bmm350_self_test *out_data, struct bmm350_dev *dev)
+static int8_t self_test_xy_axis(struct sBmm350SelfTest_t *out_data, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -1629,7 +1629,7 @@ static int8_t self_test_xy_axis(struct bmm350_self_test *out_data, struct bmm350
  */
 static int8_t self_test_config(uint8_t st_cmd,
                                uint8_t pmu_cmd,
-                               struct bmm350_self_test *out_data,
+                               struct sBmm350SelfTest_t *out_data,
                                struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
@@ -1641,20 +1641,20 @@ static int8_t self_test_config(uint8_t st_cmd,
 
     static float out_ustxh = 0.0, out_ustxl = 0.0, out_ustyh = 0.0, out_ustyl = 0.0;
 
-    rslt = bmm350_set_regs(BMM350_REG_TMR_SELFTEST_USER, &st_cmd, 1, dev);
+    rslt = bmm350SetRegs(BMM350_REG_TMR_SELFTEST_USER, &st_cmd, 1, dev);
 
     if (rslt == BMM350_OK)
     {
-        rslt = bmm350_delay_us(1000, dev);
+        rslt = bmm350DelayUs(1000, dev);
     }
 
     if (rslt == BMM350_OK)
     {
-        rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &pmu_cmd, 1, dev);
 
         if (rslt == BMM350_OK)
         {
-            rslt = bmm350_delay_us(6000, dev);
+            rslt = bmm350DelayUs(6000, dev);
 
             if (rslt == BMM350_OK)
             {
@@ -1710,7 +1710,7 @@ static int8_t self_test_config(uint8_t st_cmd,
 /*!
  * @brief This internal API is used to switch from suspend mode to normal mode or forced mode.
  */
-static int8_t set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev *dev)
+static int8_t set_powermode(enum eBmm350PowerModes_t powermode, struct bmm350_dev *dev)
 {
     /* Variable to store the function result */
     int8_t rslt;
@@ -1736,12 +1736,12 @@ static int8_t set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
     if (rslt == BMM350_OK)
     {
         /* Set PMU command configuration to desired power mode */
-        rslt = bmm350_set_regs(BMM350_REG_PMU_CMD, &reg_data, 1, dev);
+        rslt = bmm350SetRegs(BMM350_REG_PMU_CMD, &reg_data, 1, dev);
 
         if (rslt == BMM350_OK)
         {
             /* Get average configuration */
-            rslt = bmm350_get_regs(BMM350_REG_PMU_CMD_AGGR_SET, &get_avg, 1, dev);
+            rslt = bmm350GetRegs(BMM350_REG_PMU_CMD_AGGR_SET, &get_avg, 1, dev);
 
             if (rslt == BMM350_OK)
             {
@@ -1754,27 +1754,27 @@ static int8_t set_powermode(enum bmm350_power_modes powermode, struct bmm350_dev
     if (rslt == BMM350_OK)
     {
         /* Check if desired power mode is normal mode */
-        if (powermode == BMM350_NORMAL_MODE)
+        if (powermode == eBmm350NormalMode)
         {
             delay_us = BMM350_SUSPEND_TO_NORMAL_DELAY;
         }
 
         /* Check if desired power mode is forced mode */
-        if (powermode == BMM350_FORCED_MODE)
+        if (powermode == eBmm350ForcedMode)
         {
             /* Store delay based on averaging mode */
             delay_us = sus_to_forced_mode[avg];
         }
 
         /* Check if desired power mode is forced mode fast */
-        if (powermode == BMM350_FORCED_MODE_FAST)
+        if (powermode == eBmm350ForcedModeFast)
         {
             /* Store delay based on averaging mode */
             delay_us = sus_to_forced_mode_fast[avg];
         }
 
         /* Perform delay based on power mode */
-        rslt = bmm350_delay_us(delay_us, dev);
+        rslt = bmm350DelayUs(delay_us, dev);
     }
 
     return rslt;

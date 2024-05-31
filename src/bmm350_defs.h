@@ -779,20 +779,22 @@
 #define DISABLE_INTERRUPT_PIN            0
 #define NO_DATA                          -32768
 
+#define I2C_ADDRESS                     0x14
+
 /****************************** Enumerators ***************************/
-enum bmm350_interrupt_enable_disable {
+enum eBmm350InterruptEnableDisable_t {
     BMM350_DISABLE_INTERRUPT = BMM350_DISABLE,
     BMM350_ENABLE_INTERRUPT = BMM350_ENABLE
 };
 
-enum bmm350_power_modes {
-    BMM350_SUSPEND_MODE = BMM350_PMU_CMD_SUS,
-    BMM350_NORMAL_MODE = BMM350_PMU_CMD_NM,
-    BMM350_FORCED_MODE = BMM350_PMU_CMD_FM,
-    BMM350_FORCED_MODE_FAST = BMM350_PMU_CMD_FM_FAST
+enum eBmm350PowerModes_t {
+    eBmm350SuspendMode = BMM350_PMU_CMD_SUS,
+    eBmm350NormalMode = BMM350_PMU_CMD_NM,
+    eBmm350ForcedMode = BMM350_PMU_CMD_FM,
+    eBmm350ForcedModeFast = BMM350_PMU_CMD_FM_FAST
 };
 
-enum bmm350_data_rates {
+enum eBmm350DataRates_t {
     BMM350_DATA_RATE_400HZ    = BMM350_ODR_400HZ,
     BMM350_DATA_RATE_200HZ    = BMM350_ODR_200HZ,
     BMM350_DATA_RATE_100HZ    = BMM350_ODR_100HZ,
@@ -826,7 +828,7 @@ enum bmm350_intr_latch {
     BMM350_LATCHED = BMM350_INT_MODE_LATCHED
 };
 
-enum bmm350_intr_polarity {
+enum eBmm350IntrPolarity_t {
     BMM350_ACTIVE_LOW = BMM350_INT_POL_ACTIVE_LOW,
     BMM350_ACTIVE_HIGH = BMM350_INT_POL_ACTIVE_HIGH
 };
@@ -898,17 +900,17 @@ enum bmm350_ctrl_user {
     BMM350_CFG_SENS_TIM_AON_EN = BMM350_ENABLE
 };
 
-enum bmm350_x_axis_en_dis {
+enum eBmm350XAxisEnDis_t {
     BMM350_X_DIS = BMM350_DISABLE,
     BMM350_X_EN = BMM350_ENABLE
 };
 
-enum bmm350_y_axis_en_dis {
+enum eBmm350YAxisEnDis_t {
     BMM350_Y_DIS = BMM350_DISABLE,
     BMM350_Y_EN = BMM350_ENABLE
 };
 
-enum bmm350_z_axis_en_dis {
+enum eBmm350ZAxisEnDis_t {
     BMM350_Z_DIS = BMM350_DISABLE,
     BMM350_Z_EN = BMM350_ENABLE
 };
@@ -924,14 +926,14 @@ enum bmm350_z_axis_en_dis {
  * @param[in] reg_addr       : Register address from which data is read.
  * @param[out] reg_data      : Pointer to data buffer where read data is stored.
  * @param[in] len            : Number of bytes of data to be read.
- * @param[in, out] intf_ptr  : Void pointer that can enable the linking of descriptors
+ * @param[in, out] intfPtr  : Void pointer that can enable the linking of descriptors
  *                             for interface related call backs.
  *
  * retval = 0 -> Success
  * retval < 0 -> Failure
  *
  */
-typedef BMM350_INTF_RET_TYPE (*bmm350_read_fptr_t)(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr);
+typedef BMM350_INTF_RET_TYPE (*pBmm350ReadFptr_t)(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intfPtr);
 
 /*!
  * @brief Bus communication function pointer which should be mapped to
@@ -941,26 +943,26 @@ typedef BMM350_INTF_RET_TYPE (*bmm350_read_fptr_t)(uint8_t reg_addr, uint8_t *re
  * @param[in] reg_data      : Pointer to data buffer in which data to be written
  *                            is stored.
  * @param[in] len           : Number of bytes of data to be written.
- * @param[in, out] intf_ptr : Void pointer that can enable the linking of descriptors
+ * @param[in, out] intfPtr : Void pointer that can enable the linking of descriptors
  *                            for interface related call backs
  *
  * retval = 0 -> Success
  * retval < 0 -> Failure
  *
  */
-typedef BMM350_INTF_RET_TYPE (*bmm350_write_fptr_t)(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len,
-                                                    void *intf_ptr);
+typedef BMM350_INTF_RET_TYPE (*pBmm350WriteFptr_t)(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len,
+                                                    void *intfPtr);
 
 /*!
  * @brief Delay function pointer which should be mapped to
  * delay function of the user
  *
  * @param[in] period              : Delay in microseconds.
- * @param[in, out] intf_ptr       : Void pointer that can enable the linking of descriptors
+ * @param[in, out] intfPtr       : Void pointer that can enable the linking of descriptors
  *                                  for interface related call backs
  *
  */
-typedef void (*bmm350_delay_us_fptr_t)(uint32_t period, void *intf_ptr);
+typedef void (*pBmm350DelayUsFptr_t)(uint32_t period, void *intfPtr);
 
 /* Pre-declaration */
 struct bmm350_dev;
@@ -998,7 +1000,7 @@ struct bmm350_raw_mag_data
 /*!
  * @brief bmm350 compensated magnetometer data and temperature data
  */
-struct bmm350_mag_temp_data
+struct sBmm350MagTempData_t
 {
     /*! Compensated mag X data */
     float x;
@@ -1115,25 +1117,25 @@ struct bmm350_dev
      * implementation of the read and write interfaces to the
      * hardware.
      */
-    void* intf_ptr;
+    void* intfPtr;
 
     /*! Chip Id of BMM350 */
-    uint8_t chip_id;
+    uint8_t chipId;
 
     /*! Bus read function pointer */
-    bmm350_read_fptr_t read;
+    pBmm350ReadFptr_t read;
 
     /*! Bus write function pointer */
-    bmm350_write_fptr_t write;
+    pBmm350WriteFptr_t write;
 
     /*! delay(in us) function pointer */
-    bmm350_delay_us_fptr_t delay_us;
+    pBmm350DelayUsFptr_t delayUs;
 
     /*! To store interface pointer error */
     BMM350_INTF_RET_TYPE intf_rslt;
 
     /*! Variable to store status of axes enabled */
-    uint8_t axis_en;
+    uint8_t axisEn;
 
     /*! Structure for mag compensate */
     struct bmm350_mag_compensate mag_comp;
@@ -1148,13 +1150,13 @@ struct bmm350_dev
     bmm350_mraw_override_t mraw_override;
 
     /*! power mode */
-    uint8_t power_mode;
+    uint8_t powerMode;
 };
 
 /*!
  * @brief bmm350 self-test structure
  */
-struct bmm350_self_test
+struct sBmm350SelfTest_t
 {
     /* Variable to store self-test data on x-axis */
     float out_ust_x;

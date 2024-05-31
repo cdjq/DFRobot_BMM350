@@ -8,11 +8,11 @@
   * @author      [GDuang](yonglei.ren@dfrobot.com)
   * @version     V1.0.0
   * @date        2024-05-06
-  * @url         https://github.com/dfrobot/DFRobot_BMM350
+  * @url         https://github.com/DFRobot/DFRobot_BMM350
   */
 #include "DFRobot_BMM350.h"
 
-DFRobot_BMM350_I2C bmm350(&Wire, 0x14);
+DFRobot_BMM350_I2C bmm350(&Wire, I2C_ADDRESS);
 
 volatile uint8_t interruptFlag = 0;
 void myInterrupt(void)
@@ -34,18 +34,18 @@ void setup()
     delay(1000);
   } Serial.println("bmm350 init success!");
 
-  /**!
+  /**
    * Set sensor operation mode
    * opMode:
-   *   BMM350_SUSPEND_MODE      // suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
+   *   eBmm350SuspendMode      // suspend mode: Suspend mode is the default power mode of BMM350 after the chip is powered, Current consumption in suspend mode is minimal, 
    *                               so, this mode is useful for periods when data conversion is not needed. Read and write of all registers is possible.
-   *   BMM350_NORMAL_MODE       // normal mode  Get geomagnetic data normally.
-   *   BMM350_FORCED_MODE       // forced mode  Single measurement, the sensor restores to suspend mode when the measurement is done.
-   *   BMM350_FORCED_MODE_FAST  // To reach ODR = 200Hz is only possible by using FM_ FAST.
+   *   eBmm350NormalMode       // normal mode  Get geomagnetic data normally.
+   *   eBmm350ForcedMode       // forced mode  Single measurement, the sensor restores to suspend mode when the measurement is done.
+   *   eBmm350ForcedModeFast  // To reach ODR = 200Hz is only possible by using FM_ FAST.
    */
-  bmm350.setOperationMode(BMM350_NORMAL_MODE);
+  bmm350.setOperationMode(eBmm350NormalMode);
 
-  /**!
+  /**
    * Set preset mode, make it easier for users to configure sensor to get geomagnetic data (The default rate for obtaining geomagnetic data is 12.5Hz)
    * presetMode:
    *   BMM350_PRESETMODE_LOWPOWER      // Low power mode, get a fraction of data and take the mean value.
@@ -55,7 +55,7 @@ void setup()
    */
   bmm350.setPresetMode(BMM350_PRESETMODE_HIGHACCURACY);
 
-  /**!
+  /**
    * Set the rate of obtaining geomagnetic data, the higher, the faster(without delay function)
    * rate:
    *   BMM350_DATA_RATE_1_5625HZ
@@ -70,13 +70,13 @@ void setup()
    */
   bmm350.setRate(BMM350_DATA_RATE_25HZ);
 
-  /**!
+  /**
    * Enable the measurement at x-axis, y-axis and z-axis, default to be enabled, no config required, the geomagnetic data at x, y and z will be inaccurate when disabled.
    * Refer to setMeasurementXYZ() function in the .h file if you want to configure more parameters.
    */
   bmm350.setMeasurementXYZ();
 
-  /**!
+  /**
    * Enable or disable data ready interrupt pin,
    *   After enabling, the DRDY pin level will change when there's data coming.
    *   After disabling, the DRDY pin level will not change when there's data coming.
@@ -93,7 +93,7 @@ void setup()
 
 
 #if defined(ESP32) || defined(ESP8266)
-  /**!
+  /**
     Select according to the set DADY pin polarity
       INPUT_PULLUP    // Low polarity, set pin 13 to pull-up input
       INPUT_PULLDOWN  // High polarity, set pin 13 to pull-down input
@@ -106,7 +106,7 @@ void setup()
   pinMode(/*Pin */13 ,INPUT_PULLUP);
   attachInterrupt(/*interput io*/13, myInterrupt, LOW);
 #else
-  /**!    The Correspondence Table of AVR Series Arduino Interrupt Pins And Terminal Numbers
+  /**    The Correspondence Table of AVR Series Arduino Interrupt Pins And Terminal Numbers
    * ---------------------------------------------------------------------------------------
    * |                                        |    Pin       | 2  | 3  |                   |
    * |    Uno, Nano, Mini, other 328-based    |--------------------------------------------|
@@ -122,20 +122,20 @@ void setup()
    * |--------------------------------------------------------------------------------------
    */
 
-  /**!    The Correspondence Table of micro:bit Interrupt Pins And Terminal Numbers
+  /**    The Correspondence Table of micro:bit Interrupt Pins And Terminal Numbers
    * ---------------------------------------------------------------------------------------------------------------------------------------------
    * |             micro:bit                       | DigitalPin |P0-P20 can be used as an external interrupt                                     |
    * |  (When using as an external interrupt,      |---------------------------------------------------------------------------------------------|
    * |no need to set it to input mode with pinMode)|Interrupt No|Interrupt number is a pin digital value, such as P0 interrupt number 0, P1 is 1 |
    * |-------------------------------------------------------------------------------------------------------------------------------------------|
    */
-  /**!
+  /**
        Select according to the set DADY pin polarity
       INPUT_PULLUP    // Low polarity, set pin 2 to pull-up input
    */
   pinMode(/*Pin */2 ,INPUT_PULLUP);
 
-  /**!
+  /**
     Set the pin to interrupt mode
     // Open the external interrupt 0, connect INT1/2 to the digital pin of the main control:
       function
@@ -149,7 +149,7 @@ void setup()
 
 void loop() 
 {
-  /**!
+  /**
    * Get data ready status, determine whether the data is ready (get the data ready status through software)
    * status:
    *   true  Data ready
@@ -165,7 +165,7 @@ void loop()
   }
   */
 
-  /**!
+  /**
     When the interrupt occur in DRDY IO, get the geomagnetic data (get the data ready status through hardware)
     Enable interrupt again
   */ 
