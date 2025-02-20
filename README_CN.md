@@ -5,12 +5,12 @@ DFRobot_BMP350
 
 BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符合罗盘应用的要求。 基于博世专有的 FlipCore 技术，BMM350 提供了高精度和动态的绝对空间方向和运动矢量。 体积小、重量轻，特别适用于支持无人机精准航向。 BMM350 还可与由 3 轴加速度计和 3 轴陀螺仪组成的惯性测量单元一起使用。
 
-![产品效果图](./resources/images/)![产品效果图](./resources/images/)
-
+![产品效果图](./resources/images/BMM350.png)![产品效果图](./resources/images/BMM350Size.png)
 
 ## 产品链接（[https://www.dfrobot.com.cn](https://www.dfrobot.com.cn)）
+
     SKU: 
-   
+
 ## 目录
 
 * [概述](#概述)
@@ -101,7 +101,7 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @return result 返回的字符串为自测的结果
    */
   String selfTest(eBmm350SelfTest_t testMode = eBmm350SelfTestNormal);
-  
+
   /**
    * @fn setMeasurementXYZ
    * @brief 使能x y z 轴的测量,默认设置为使能,禁止后xyz轴的地磁数据不准确
@@ -189,19 +189,19 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
    * @n interrupt_x、interrupt_y、interrupt_z 存放轴中断状态
    */
   sBmm350ThresholdData_t getThresholdData(void);
-
 ```
 
 ## 兼容性
+
 | MCU                | Work Well | Work Wrong | Untested | Remarks |
-| ------------------ | :-------: | :--------: | :------: | ------- |
-| Arduino uno        |     √     |            |          |         |
-| FireBeetle esp32   |     √     |            |          |         |
-| FireBeetle esp8266 |     √     |            |          |         |
-| FireBeetle m0      |     √     |            |          |         |
-| Leonardo           |     √     |            |          |         |
-| Microbit           |     √     |            |          |         |
-| Arduino MEGA2560   |     √     |            |          |         |
+| ------------------ |:---------:|:----------:|:--------:| ------- |
+| Arduino uno        | √         |            |          |         |
+| FireBeetle esp32   | √         |            |          |         |
+| FireBeetle esp8266 | √         |            |          |         |
+| FireBeetle m0      | √         |            |          |         |
+| Leonardo           | √         |            |          |         |
+| Microbit           | √         |            |          |         |
+| Arduino MEGA2560   | √         |            |          |         |
 
 ## History
 
@@ -210,6 +210,3 @@ BMM350 是一款低功耗、低噪声的 3 轴数字地磁传感器，完全符�
 ## Credits
 
 Written by [GDuang](yonglei.ren@dfrobot.com), 2024. (Welcome to our [website](https://www.dfrobot.com/))
-
-
-
