@@ -1393,9 +1393,25 @@ class DFRobot_bmm350(object):
     _mag_data.temperature = out_data[3]
 
     geomagnetic = [None] * 3
-    geomagnetic[0] = _mag_data.x
-    geomagnetic[1] = _mag_data.y
-    geomagnetic[2] = _mag_data.z
+    
+    _magData[3]=[0,0,0]
+    
+    #calibration parameters
+    _hard_iron[3] = [-13.45, -28.95, 12.69]
+    _soft_iron[3][3] = [[0.992, -0.006, -0.007],[-0.006, 0.990, -0.004],[-0.006, 0.990, -0.004]]
+    
+    #Apply hard iron calibration
+    _magData[0]=_mag_data.x+_hard_iron[0]
+    _magData[1]=_mag_data.x+_hard_iron[1]
+    _magData[2]=_mag_data.x+_hard_iron[2]
+    #// Apply soft iron calibration
+    for i in range(3):
+      _magData[i] = (soft_iron[i][0] * _magData[0]) + (soft_iron[i][1] * _magData[1]) + (soft_iron[i][2] * _magData[2])
+    
+    geomagnetic[0] = _magData[0]
+    geomagnetic[1] = _magData[1]
+    geomagnetic[2] = _magData[2]
+    
     return geomagnetic
 
 
